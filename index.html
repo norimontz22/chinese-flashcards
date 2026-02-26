@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🇨🇳 Chinese Flash Cards</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🇨🇳 学中文 <span class="subtitle">Learn Chinese</span></h1>
+        </div>
+
+        <div class="stats">
+            <div class="stat-card">
+                <span class="stat-label">Cards Studied</span>
+                <span id="studied" class="stat-number">0</span>
+            </div>
+            <div class="stat-card">
+                <span class="stat-label">Known</span>
+                <span id="known" class="stat-number">0</span>
+            </div>
+            <div class="stat-card">
+                <span class="stat-label">To Review</span>
+                <span id="remaining" class="stat-number">20</span>
+            </div>
+        </div>
+
+        <div class="card-area">
+            <div class="card" id="flashcard" onclick="flipCard()">
+                <div class="card-inner" id="cardInner">
+                    <div class="card-front">
+                        <div class="chinese-character" id="chineseChar">你好</div>
+                        <div class="pinyin" id="pinyin">nǐ hǎo</div>
+                    </div>
+                    <div class="card-back">
+                        <div class="english" id="english">Hello</div>
+                        <div class="example" id="example">你好，我叫...</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="controls">
+            <button class="control-btn" onclick="prevCard()" id="prevBtn">◀ Previous</button>
+            <button class="control-btn flip-btn" onclick="flipCard()">🔄 Flip</button>
+            <button class="control-btn" onclick="nextCard()" id="nextBtn">Next ▶</button>
+        </div>
+
+        <div class="feedback">
+            <button class="btn btn-know" onclick="markKnown()">✓ I Know This</button>
+            <button class="btn btn-review" onclick="markReview()">🔄 Need Review</button>
+        </div>
+
+        <div class="progress-section">
+            <div class="progress-bar">
+                <div id="progress" class="progress-fill"></div>
+            </div>
+            <div class="card-counter" id="cardCounter">Card 1 of 20</div>
+        </div>
+
+        <div class="category-tabs">
+            <button class="tab active" onclick="filterCategory('all')">All</button>
+            <button class="tab" onclick="filterCategory('greetings')">Greetings</button>
+            <button class="tab" onclick="filterCategory('basics')">Basics</button>
+            <button class="tab" onclick="filterCategory('numbers')">Numbers</button>
+            <button class="tab" onclick="filterCategory('food')">Food</button>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+
+</html>
