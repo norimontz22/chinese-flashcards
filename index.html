@@ -25,49 +25,61 @@
             </div>
             <div class="stat-card">
                 <span class="stat-label">To Review</span>
-                <span id="remaining" class="stat-number">20</span>
+                <span id="remaining" class="stat-number">0</span>
             </div>
         </div>
 
-        <div class="card-area">
-            <div class="card" id="flashcard" onclick="flipCard()">
-                <div class="card-inner" id="cardInner">
-                    <div class="card-front">
-                        <div class="chinese-character" id="chineseChar">你好</div>
-                        <div class="pinyin" id="pinyin">nǐ hǎo</div>
-                    </div>
-                    <div class="card-back">
-                        <div class="english" id="english">Hello</div>
-                        <div class="example" id="example">你好，我叫...</div>
-                    </div>
-                </div>
+        <!-- Main flashcard area with multiple choice -->
+        <div class="card-stage">
+            <!-- Clickable flashcard (shows Chinese & pinyin) -->
+            <div class="flashcard" id="flashcard">
+                <div class="chinese-big" id="chineseChar">叫</div>
+                <div class="pinyin-badge" id="pinyin">jiào</div>
+                <div class="hint-text">👆 点击卡片看英文</div>
+            </div>
+
+            <!-- Hidden English translation (revealed on click) -->
+            <div class="english-reveal" id="englishReveal">
+                🇬🇧 <span id="englishMeaning">call / to be named</span>
+            </div>
+
+            <!-- Multiple choice options -->
+            <div class="options-grid" id="optionsContainer"></div>
+
+            <!-- Feedback message -->
+            <div class="feedback-message" id="feedbackMsg">🤔 Choose the English meaning</div>
+
+            <!-- Next card button (enabled after correct answer) -->
+            <div class="next-area">
+                <button class="next-btn" id="nextCardBtn" disabled>▶ Next Card</button>
             </div>
         </div>
 
+        <!-- Navigation controls -->
         <div class="controls">
-            <button class="control-btn" onclick="prevCard()" id="prevBtn">◀ Previous</button>
-            <button class="control-btn flip-btn" onclick="flipCard()">🔄 Flip</button>
-            <button class="control-btn" onclick="nextCard()" id="nextBtn">Next ▶</button>
+            <button class="control-btn" id="prevBtn">◀ Previous</button>
+            <button class="control-btn flip-btn" id="flipBtn">🔄 Flip</button>
+            <button class="control-btn" id="nextBtn">Next ▶</button>
         </div>
 
-        <div class="feedback">
-            <button class="btn btn-know" onclick="markKnown()">✓ I Know This</button>
-            <button class="btn btn-review" onclick="markReview()">🔄 Need Review</button>
-        </div>
-
+        <!-- Progress bar -->
         <div class="progress-section">
             <div class="progress-bar">
                 <div id="progress" class="progress-fill"></div>
             </div>
-            <div class="card-counter" id="cardCounter">Card 1 of 20</div>
+            <div class="card-counter" id="cardCounter">Card 1 of <span id="totalCards">0</span></div>
         </div>
 
+        <!-- Category filters -->
         <div class="category-tabs">
-            <button class="tab active" onclick="filterCategory('all')">All</button>
-            <button class="tab" onclick="filterCategory('greetings')">Greetings</button>
-            <button class="tab" onclick="filterCategory('basics')">Basics</button>
-            <button class="tab" onclick="filterCategory('numbers')">Numbers</button>
-            <button class="tab" onclick="filterCategory('food')">Food</button>
+            <button class="tab active" data-category="all">All</button>
+            <button class="tab" data-category="greetings">Greetings</button>
+            <button class="tab" data-category="basics">Basics</button>
+            <button class="tab" data-category="numbers">Numbers</button>
+            <button class="tab" data-category="food">Food</button>
+            <button class="tab" data-category="people">People</button>
+            <button class="tab" data-category="places">Places</button>
+            <button class="tab" data-category="action">Actions</button>
         </div>
     </div>
 
