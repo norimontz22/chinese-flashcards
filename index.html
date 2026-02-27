@@ -3,55 +3,61 @@
 
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>🐼 HSK 1-2 Flash Cards - 150+ Words</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
+    <title>🐼 HSK 1-2 · mobile flashcards</title>
     <style>
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
         }
         
         body {
-            font-family: 'Segoe UI', 'PingFang SC', sans-serif;
+            font-family: -apple-system, 'Segoe UI', 'PingFang SC', 'Helvetica Neue', sans-serif;
             background: linear-gradient(145deg, #8B0000 0%, #B22222 100%);
             min-height: 100vh;
             display: flex;
             justify-content: center;
             align-items: center;
-            padding: 16px;
+            padding: 8px;
+            touch-action: pan-y pinch-zoom;
+            /* smooth touch */
         }
         
         .container {
-            max-width: 800px;
+            max-width: 600px;
+            /* narrower for phones */
             width: 100%;
             background: white;
-            border-radius: 40px;
-            padding: 25px;
-            box-shadow: 0 30px 60px rgba(0, 0, 0, 0.4);
+            border-radius: 32px;
+            padding: 18px 16px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
         }
         
         h1 {
             text-align: center;
             color: #8B0000;
-            font-size: 2.2em;
-            margin-bottom: 5px;
+            font-size: 1.9rem;
+            margin-bottom: 2px;
+            letter-spacing: -0.5px;
         }
         
         .subtitle {
             text-align: center;
             color: #a16161;
-            margin-bottom: 20px;
+            margin-bottom: 12px;
             font-style: italic;
+            font-size: 0.9rem;
         }
         
         .stats {
             display: flex;
             justify-content: space-between;
             background: #fef0f0;
-            padding: 15px;
-            border-radius: 30px;
-            margin-bottom: 25px;
+            padding: 10px 6px;
+            border-radius: 40px;
+            margin-bottom: 16px;
         }
         
         .stat {
@@ -60,81 +66,105 @@
         }
         
         .stat-label {
-            font-size: 0.9em;
+            font-size: 0.7rem;
             color: #666;
+            text-transform: uppercase;
         }
         
         .stat-number {
-            font-size: 2em;
+            font-size: 1.5rem;
             font-weight: bold;
             color: #8B0000;
+            line-height: 1.2;
         }
+        /* big touch target */
         
         .card {
             background: linear-gradient(145deg, #8B0000, #B22222);
-            border-radius: 30px;
-            padding: 40px 20px;
+            border-radius: 40px;
+            padding: 20px 10px;
             text-align: center;
             cursor: pointer;
-            margin-bottom: 20px;
+            margin-bottom: 16px;
             border: 3px solid #ffd7a5;
-            min-height: 300px;
+            min-height: 240px;
             display: flex;
             flex-direction: column;
             justify-content: center;
+            touch-action: manipulation;
+            transition: transform 0.1s;
         }
         
+        .card:active {
+            transform: scale(0.99);
+        }
+        /* subtle touch feedback */
+        
         .chinese {
-            font-size: 5rem;
+            font-size: clamp(3rem, 15vw, 5rem);
+            /* responsive */
             color: white;
-            margin-bottom: 15px;
+            margin-bottom: 6px;
             line-height: 1.2;
+            word-break: break-word;
         }
         
         .pinyin {
-            font-size: 2rem;
+            font-size: clamp(1.5rem, 6vw, 2.2rem);
             color: rgba(255, 255, 255, 0.9);
             font-style: italic;
-            margin-bottom: 15px;
+            margin-bottom: 10px;
         }
         
         .english {
-            font-size: 2rem;
+            font-size: clamp(1.6rem, 6vw, 2.2rem);
             color: #8B0000;
             background: white;
-            padding: 15px;
-            border-radius: 20px;
+            padding: 10px;
+            border-radius: 30px;
             display: none;
+            word-break: break-word;
         }
         
         .hint {
             text-align: center;
             color: #a16161;
-            margin-bottom: 20px;
+            margin-bottom: 16px;
+            font-size: 0.85rem;
         }
+        /* option grid - touch friendly */
         
         .options {
             display: grid;
             grid-template-columns: 1fr 1fr;
-            gap: 12px;
-            margin: 20px 0;
+            gap: 10px;
+            margin: 12px 0;
         }
         
         .option {
             background: white;
             border: 3px solid #e0b6b6;
-            border-radius: 40px;
-            padding: 15px;
+            border-radius: 60px;
+            /* pill shape */
+            padding: 16px 4px;
             font-size: 1.2rem;
             cursor: pointer;
             box-shadow: 0 5px 0 #bb8f8f;
-            transition: all 0.2s;
+            transition: all 0.1s;
+            font-weight: 600;
+            touch-action: manipulation;
+            text-align: center;
+            word-break: break-word;
+            line-height: 1.3;
+            min-height: 70px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
         
-        .option:hover:not(:disabled) {
-            background: #fff0f0;
-            transform: translateY(-2px);
-            box-shadow: 0 7px 0 #bb8f8f;
+        .option:active {
+            transform: translateY(2px);
+            box-shadow: 0 3px 0 #bb8f8f;
         }
         
         .option.correct {
@@ -153,1309 +183,1321 @@
         }
         
         .option:disabled {
-            opacity: 0.7;
-            cursor: not-allowed;
+            opacity: 0.6;
+            cursor: default;
             transform: none;
         }
         
         .feedback {
             text-align: center;
             font-size: 1.3rem;
-            padding: 15px;
+            padding: 14px 8px;
             background: #fff8f0;
-            border-radius: 30px;
-            margin: 15px 0;
+            border-radius: 60px;
+            margin: 8px 0 12px;
             min-height: 70px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
+        /* big juicy next button */
         
         .next-btn {
             background: #8B0000;
             color: white;
-            font-size: 1.5rem;
-            padding: 15px;
-            border-radius: 40px;
+            font-size: 1.8rem;
+            padding: 18px 10px;
+            border-radius: 60px;
             border: none;
             cursor: pointer;
             width: 100%;
-            margin: 10px 0;
+            margin: 6px 0;
             font-weight: bold;
-            transition: background 0.2s;
+            transition: opacity 0.2s;
+            touch-action: manipulation;
+            box-shadow: 0 6px 0 #5c0000;
         }
         
-        .next-btn:hover:not(:disabled) {
-            background: #a00000;
+        .next-btn:active {
+            transform: translateY(3px);
+            box-shadow: 0 3px 0 #5c0000;
         }
         
         .next-btn:disabled {
             opacity: 0.5;
-            cursor: not-allowed;
+            transform: none;
+            box-shadow: 0 5px 0 #5c0000;
+            pointer-events: none;
         }
         
         .nav {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin: 20px 0;
+            margin: 12px 0 10px;
+            gap: 10px;
         }
         
         .nav-btn {
             background: #ffead2;
             border: 2px solid #dba1a1;
-            padding: 10px 20px;
-            border-radius: 30px;
+            padding: 14px 10px;
+            border-radius: 50px;
             color: #8B0000;
             cursor: pointer;
             font-weight: bold;
-            transition: all 0.2s;
+            transition: 0.1s;
+            font-size: 1.2rem;
+            flex: 1;
+            text-align: center;
+            touch-action: manipulation;
+            box-shadow: 0 4px 0 #dba1a1;
         }
         
-        .nav-btn:hover:not(:disabled) {
-            background: #ffd7a5;
-            transform: scale(1.05);
+        .nav-btn:active {
+            transform: translateY(2px);
+            box-shadow: 0 2px 0 #dba1a1;
         }
         
         .nav-btn:disabled {
-            opacity: 0.5;
-            cursor: not-allowed;
+            opacity: 0.4;
+            transform: none;
+            box-shadow: 0 4px 0 #dba1a1;
+            pointer-events: none;
         }
         
         .counter {
-            font-size: 1.2rem;
+            font-size: 1.3rem;
             background: #f7d7d7;
-            padding: 8px 20px;
-            border-radius: 30px;
+            padding: 8px 16px;
+            border-radius: 50px;
+            font-weight: 600;
+            min-width: 90px;
+            text-align: center;
         }
         
         .progress-bar {
             width: 100%;
-            height: 10px;
-            background: #f0f0f0;
-            border-radius: 5px;
-            margin: 20px 0;
+            height: 12px;
+            background: #f0e0e0;
+            border-radius: 20px;
+            margin: 12px 0;
         }
         
         .progress-fill {
             height: 100%;
             background: linear-gradient(90deg, #8B0000, #B22222);
-            border-radius: 5px;
+            border-radius: 20px;
             width: 0%;
-            transition: width 0.3s;
+            transition: width 0.2s;
         }
+        /* scrollable categories - touch */
         
         .categories {
             display: flex;
-            flex-wrap: wrap;
+            flex-wrap: nowrap;
+            overflow-x: auto;
             gap: 8px;
-            justify-content: center;
-            margin: 20px 0;
-            max-height: 120px;
-            overflow-y: auto;
-            padding: 5px;
+            padding: 8px 4px 12px;
+            margin: 10px 0 0;
+            -webkit-overflow-scrolling: touch;
+            scrollbar-width: thin;
+            white-space: nowrap;
+        }
+        
+        .categories::-webkit-scrollbar {
+            height: 4px;
+        }
+        
+        .categories::-webkit-scrollbar-thumb {
+            background: #8B0000;
+            border-radius: 10px;
         }
         
         .cat-btn {
-            padding: 8px 15px;
+            padding: 12px 22px;
             border: 2px solid #8B0000;
-            border-radius: 25px;
+            border-radius: 50px;
             background: transparent;
             color: #8B0000;
             cursor: pointer;
             font-weight: bold;
-            transition: all 0.2s;
-            white-space: nowrap;
+            transition: 0.1s;
+            font-size: 1rem;
+            touch-action: manipulation;
+            flex: 0 0 auto;
+            background: white;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
         }
         
-        .cat-btn:hover {
-            background: #ffead2;
+        .cat-btn:active {
+            background: #ffdad6;
         }
         
         .cat-btn.active {
             background: #8B0000;
             color: white;
+            border-color: #8B0000;
         }
         
         .word-count {
             text-align: center;
             color: #8B0000;
             font-weight: bold;
-            margin: 10px 0;
+            margin: 6px 0 2px;
+            font-size: 0.95rem;
         }
         
         .footer-note {
             text-align: center;
-            margin-top: 20px;
+            margin-top: 16px;
             color: #a16161;
-            font-size: 0.9rem;
+            font-size: 0.8rem;
+        }
+        /* prevent zoom on double-tap for buttons */
+        
+        button,
+        .card,
+        .option,
+        .nav-btn,
+        .next-btn,
+        .cat-btn {
+            touch-action: manipulation;
         }
     </style>
 </head>
 
 <body>
     <div class="container">
-        <h1>🐼 HSK 1-2 词汇卡</h1>
-        <div class="subtitle">150+ Words from Lessons 1-15</div>
+        <h1>🐼 HSK 1-2</h1>
+        <div class="subtitle">150+ words · works on phone & laptop</div>
 
+        <!-- compact stats -->
         <div class="stats">
-            <div class="stat">
-                <div class="stat-label">Studied</div>
+            <div class="stat"><span class="stat-label">studied</span>
                 <div class="stat-number" id="studied">0</div>
             </div>
-            <div class="stat">
-                <div class="stat-label">Known</div>
+            <div class="stat"><span class="stat-label">known</span>
                 <div class="stat-number" id="known">0</div>
             </div>
-            <div class="stat">
-                <div class="stat-label">Review</div>
+            <div class="stat"><span class="stat-label">review</span>
                 <div class="stat-number" id="review">0</div>
             </div>
         </div>
 
+        <!-- big tappable card -->
         <div class="card" id="card">
             <div class="chinese" id="chinese">你</div>
             <div class="pinyin" id="pinyin">nǐ</div>
             <div class="english" id="english">you</div>
         </div>
-        <div class="hint">👆 Click card to flip | ⬅️ ➡️ Arrow keys</div>
+        <div class="hint">👆 tap card · or use ← → keys (laptop)</div>
 
+        <!-- multiple choice (touch optimized) -->
         <div class="options" id="options"></div>
-        <div class="feedback" id="feedback">Choose the correct meaning</div>
+        <div class="feedback" id="feedback">choose the correct meaning</div>
 
-        <button class="next-btn" id="nextBtn" disabled>▶ Next Card</button>
+        <!-- big next button -->
+        <button class="next-btn" id="nextBtn" disabled>▶ next word</button>
 
+        <!-- navigation row -->
         <div class="nav">
-            <button class="nav-btn" id="prevBtn" disabled>◀ Previous</button>
-            <span class="counter" id="counter">1 / 0</span>
-            <button class="nav-btn" id="nextNavBtn">Next ▶</button>
+            <button class="nav-btn" id="prevBtn" disabled>◀ prev</button>
+            <span class="counter" id="counter">1/0</span>
+            <button class="nav-btn" id="nextNavBtn">next ▶</button>
         </div>
 
         <div class="progress-bar">
             <div class="progress-fill" id="progress"></div>
         </div>
+        <div class="word-count" id="wordCount">📚 loading ...</div>
 
-        <div class="word-count" id="wordCount">Loading words...</div>
-
-        <div class="categories" id="categories">
-            <!-- Categories will be populated by JavaScript -->
-        </div>
+        <!-- horizontal scroll categories (thumb friendly) -->
+        <div class="categories" id="categories"></div>
 
         <div class="footer-note">
-            🎮 HSK 1-2 Vocabulary | No login required | 150+ words
+            ✨ share this file · works everywhere · no internet
         </div>
     </div>
 
     <script>
-        // COMPLETE HSK 1-2 WORD LIST (150+ words from your screenshots)
-        const words = [
-            // LESSON 1 - Greetings & Basics
-            {
-                chinese: "你",
-                pinyin: "nǐ",
-                english: "you",
-                category: "Basics"
-            }, {
-                chinese: "好",
-                pinyin: "hǎo",
-                english: "good",
-                category: "Basics"
-            }, {
-                chinese: "你好",
-                pinyin: "nǐ hǎo",
-                english: "hello",
-                category: "Greetings"
-            }, {
-                chinese: "再见",
-                pinyin: "zài jiàn",
-                english: "goodbye",
-                category: "Greetings"
-            }, {
-                chinese: "谢谢",
-                pinyin: "xiè xiè",
-                english: "thank you",
-                category: "Greetings"
-            }, {
-                chinese: "不",
-                pinyin: "bù",
-                english: "no/not",
-                category: "Basics"
-            }, {
-                chinese: "很",
-                pinyin: "hěn",
-                english: "very",
-                category: "Basics"
-            },
+        (function() {
+            // ---------- FULL HSK 1-2 WORD LIST (150+ items) ----------
+            const words = [
+                // lesson 1
+                {
+                    chinese: "你",
+                    pinyin: "nǐ",
+                    english: "you",
+                    category: "Basics"
+                }, {
+                    chinese: "好",
+                    pinyin: "hǎo",
+                    english: "good",
+                    category: "Basics"
+                }, {
+                    chinese: "你好",
+                    pinyin: "nǐ hǎo",
+                    english: "hello",
+                    category: "Greetings"
+                }, {
+                    chinese: "再见",
+                    pinyin: "zài jiàn",
+                    english: "goodbye",
+                    category: "Greetings"
+                }, {
+                    chinese: "谢谢",
+                    pinyin: "xiè xie",
+                    english: "thank you",
+                    category: "Greetings"
+                }, {
+                    chinese: "不",
+                    pinyin: "bù",
+                    english: "no/not",
+                    category: "Basics"
+                }, {
+                    chinese: "很",
+                    pinyin: "hěn",
+                    english: "very",
+                    category: "Basics"
+                },
+                // lesson 2
+                {
+                    chinese: "我",
+                    pinyin: "wǒ",
+                    english: "I/me",
+                    category: "People"
+                }, {
+                    chinese: "他",
+                    pinyin: "tā",
+                    english: "he/him",
+                    category: "People"
+                }, {
+                    chinese: "她",
+                    pinyin: "tā",
+                    english: "she/her",
+                    category: "People"
+                }, {
+                    chinese: "爸爸",
+                    pinyin: "bàba",
+                    english: "father",
+                    category: "Family"
+                }, {
+                    chinese: "妈妈",
+                    pinyin: "māma",
+                    english: "mother",
+                    category: "Family"
+                }, {
+                    chinese: "哥哥",
+                    pinyin: "gēge",
+                    english: "older brother",
+                    category: "Family"
+                }, {
+                    chinese: "姐姐",
+                    pinyin: "jiějie",
+                    english: "older sister",
+                    category: "Family"
+                }, {
+                    chinese: "弟弟",
+                    pinyin: "dìdi",
+                    english: "younger brother",
+                    category: "Family"
+                }, {
+                    chinese: "妹妹",
+                    pinyin: "mèimei",
+                    english: "younger sister",
+                    category: "Family"
+                }, {
+                    chinese: "儿子",
+                    pinyin: "érzi",
+                    english: "son",
+                    category: "Family"
+                }, {
+                    chinese: "女儿",
+                    pinyin: "nǚ'ér",
+                    english: "daughter",
+                    category: "Family"
+                }, {
+                    chinese: "爷爷",
+                    pinyin: "yéye",
+                    english: "grandfather",
+                    category: "Family"
+                }, {
+                    chinese: "奶奶",
+                    pinyin: "nǎinai",
+                    english: "grandmother",
+                    category: "Family"
+                }, {
+                    chinese: "朋友",
+                    pinyin: "péngyou",
+                    english: "friend",
+                    category: "People"
+                }, {
+                    chinese: "同学",
+                    pinyin: "tóngxué",
+                    english: "classmate",
+                    category: "People"
+                }, {
+                    chinese: "老师",
+                    pinyin: "lǎoshī",
+                    english: "teacher",
+                    category: "People"
+                }, {
+                    chinese: "学生",
+                    pinyin: "xuésheng",
+                    english: "student",
+                    category: "People"
+                }, {
+                    chinese: "医生",
+                    pinyin: "yīshēng",
+                    english: "doctor",
+                    category: "People"
+                }, {
+                    chinese: "人",
+                    pinyin: "rén",
+                    english: "person",
+                    category: "People"
+                },
+                // lesson 3 numbers
+                {
+                    chinese: "一",
+                    pinyin: "yī",
+                    english: "one",
+                    category: "Numbers"
+                }, {
+                    chinese: "二",
+                    pinyin: "èr",
+                    english: "two",
+                    category: "Numbers"
+                }, {
+                    chinese: "三",
+                    pinyin: "sān",
+                    english: "three",
+                    category: "Numbers"
+                }, {
+                    chinese: "四",
+                    pinyin: "sì",
+                    english: "four",
+                    category: "Numbers"
+                }, {
+                    chinese: "五",
+                    pinyin: "wǔ",
+                    english: "five",
+                    category: "Numbers"
+                }, {
+                    chinese: "六",
+                    pinyin: "liù",
+                    english: "six",
+                    category: "Numbers"
+                }, {
+                    chinese: "七",
+                    pinyin: "qī",
+                    english: "seven",
+                    category: "Numbers"
+                }, {
+                    chinese: "八",
+                    pinyin: "bā",
+                    english: "eight",
+                    category: "Numbers"
+                }, {
+                    chinese: "九",
+                    pinyin: "jiǔ",
+                    english: "nine",
+                    category: "Numbers"
+                }, {
+                    chinese: "十",
+                    pinyin: "shí",
+                    english: "ten",
+                    category: "Numbers"
+                }, {
+                    chinese: "百",
+                    pinyin: "bǎi",
+                    english: "hundred",
+                    category: "Numbers"
+                }, {
+                    chinese: "千",
+                    pinyin: "qiān",
+                    english: "thousand",
+                    category: "Numbers"
+                }, {
+                    chinese: "岁",
+                    pinyin: "suì",
+                    english: "years old",
+                    category: "Numbers"
+                }, {
+                    chinese: "几",
+                    pinyin: "jǐ",
+                    english: "how many",
+                    category: "Questions"
+                }, {
+                    chinese: "多",
+                    pinyin: "duō",
+                    english: "many/much",
+                    category: "Numbers"
+                },
+                // lesson 4 time
+                {
+                    chinese: "今天",
+                    pinyin: "jīntiān",
+                    english: "today",
+                    category: "Time"
+                }, {
+                    chinese: "明天",
+                    pinyin: "míngtiān",
+                    english: "tomorrow",
+                    category: "Time"
+                }, {
+                    chinese: "昨天",
+                    pinyin: "zuótiān",
+                    english: "yesterday",
+                    category: "Time"
+                }, {
+                    chinese: "今年",
+                    pinyin: "jīnnián",
+                    english: "this year",
+                    category: "Time"
+                }, {
+                    chinese: "去年",
+                    pinyin: "qùnián",
+                    english: "last year",
+                    category: "Time"
+                }, {
+                    chinese: "早上",
+                    pinyin: "zǎoshang",
+                    english: "morning",
+                    category: "Time"
+                }, {
+                    chinese: "晚上",
+                    pinyin: "wǎnshang",
+                    english: "evening",
+                    category: "Time"
+                }, {
+                    chinese: "星期",
+                    pinyin: "xīngqī",
+                    english: "week",
+                    category: "Time"
+                }, {
+                    chinese: "现在",
+                    pinyin: "xiànzài",
+                    english: "now",
+                    category: "Time"
+                }, {
+                    chinese: "时候",
+                    pinyin: "shíhou",
+                    english: "time/moment",
+                    category: "Time"
+                },
+                // lesson 5 verbs
+                {
+                    chinese: "是",
+                    pinyin: "shì",
+                    english: "to be",
+                    category: "Verbs"
+                }, {
+                    chinese: "有",
+                    pinyin: "yǒu",
+                    english: "to have",
+                    category: "Verbs"
+                }, {
+                    chinese: "做",
+                    pinyin: "zuò",
+                    english: "to do/make",
+                    category: "Verbs"
+                }, {
+                    chinese: "去",
+                    pinyin: "qù",
+                    english: "to go",
+                    category: "Verbs"
+                }, {
+                    chinese: "来",
+                    pinyin: "lái",
+                    english: "to come",
+                    category: "Verbs"
+                }, {
+                    chinese: "吃",
+                    pinyin: "chī",
+                    english: "to eat",
+                    category: "Verbs"
+                }, {
+                    chinese: "喝",
+                    pinyin: "hē",
+                    english: "to drink",
+                    category: "Verbs"
+                }, {
+                    chinese: "说",
+                    pinyin: "shuō",
+                    english: "to speak",
+                    category: "Verbs"
+                }, {
+                    chinese: "读",
+                    pinyin: "dú",
+                    english: "to read",
+                    category: "Verbs"
+                }, {
+                    chinese: "写",
+                    pinyin: "xiě",
+                    english: "to write",
+                    category: "Verbs"
+                }, {
+                    chinese: "听",
+                    pinyin: "tīng",
+                    english: "to listen",
+                    category: "Verbs"
+                }, {
+                    chinese: "看",
+                    pinyin: "kàn",
+                    english: "to see/watch",
+                    category: "Verbs"
+                }, {
+                    chinese: "学",
+                    pinyin: "xué",
+                    english: "to learn",
+                    category: "Verbs"
+                }, {
+                    chinese: "叫",
+                    pinyin: "jiào",
+                    english: "to call/be called",
+                    category: "Verbs"
+                }, {
+                    chinese: "在",
+                    pinyin: "zài",
+                    english: "to be at",
+                    category: "Verbs"
+                }, {
+                    chinese: "工作",
+                    pinyin: "gōngzuò",
+                    english: "to work",
+                    category: "Verbs"
+                }, {
+                    chinese: "休息",
+                    pinyin: "xiūxi",
+                    english: "to rest",
+                    category: "Verbs"
+                }, {
+                    chinese: "洗澡",
+                    pinyin: "xǐ zǎo",
+                    english: "to shower",
+                    category: "Verbs"
+                }, {
+                    chinese: "打扫",
+                    pinyin: "dǎsǎo",
+                    english: "to clean",
+                    category: "Verbs"
+                }, {
+                    chinese: "唱歌",
+                    pinyin: "chàng gē",
+                    english: "to sing",
+                    category: "Verbs"
+                }, {
+                    chinese: "跳舞",
+                    pinyin: "tiào wǔ",
+                    english: "to dance",
+                    category: "Verbs"
+                }, {
+                    chinese: "游泳",
+                    pinyin: "yóu yǒng",
+                    english: "to swim",
+                    category: "Verbs"
+                }, {
+                    chinese: "睡觉",
+                    pinyin: "shuì jiào",
+                    english: "to sleep",
+                    category: "Verbs"
+                },
+                // lesson 6 food
+                {
+                    chinese: "咖啡",
+                    pinyin: "kāfēi",
+                    english: "coffee",
+                    category: "Food"
+                }, {
+                    chinese: "面包",
+                    pinyin: "miànbāo",
+                    english: "bread",
+                    category: "Food"
+                }, {
+                    chinese: "面条",
+                    pinyin: "miàntiáo",
+                    english: "noodles",
+                    category: "Food"
+                }, {
+                    chinese: "米饭",
+                    pinyin: "mǐfàn",
+                    english: "rice",
+                    category: "Food"
+                }, {
+                    chinese: "水",
+                    pinyin: "shuǐ",
+                    english: "water",
+                    category: "Food"
+                }, {
+                    chinese: "茶",
+                    pinyin: "chá",
+                    english: "tea",
+                    category: "Food"
+                }, {
+                    chinese: "菜",
+                    pinyin: "cài",
+                    english: "vegetables/dish",
+                    category: "Food"
+                }, {
+                    chinese: "水果",
+                    pinyin: "shuǐguǒ",
+                    english: "fruit",
+                    category: "Food"
+                }, {
+                    chinese: "苹果",
+                    pinyin: "píngguǒ",
+                    english: "apple",
+                    category: "Food"
+                }, {
+                    chinese: "好吃",
+                    pinyin: "hǎochī",
+                    english: "delicious",
+                    category: "Food"
+                },
+                // lesson 7 places
+                {
+                    chinese: "学校",
+                    pinyin: "xuéxiào",
+                    english: "school",
+                    category: "Places"
+                }, {
+                    chinese: "医院",
+                    pinyin: "yīyuàn",
+                    english: "hospital",
+                    category: "Places"
+                }, {
+                    chinese: "公园",
+                    pinyin: "gōngyuán",
+                    english: "park",
+                    category: "Places"
+                }, {
+                    chinese: "机场",
+                    pinyin: "jīchǎng",
+                    english: "airport",
+                    category: "Places"
+                }, {
+                    chinese: "车站",
+                    pinyin: "chēzhàn",
+                    english: "bus/train station",
+                    category: "Places"
+                }, {
+                    chinese: "商店",
+                    pinyin: "shāngdiàn",
+                    english: "shop/store",
+                    category: "Places"
+                }, {
+                    chinese: "家",
+                    pinyin: "jiā",
+                    english: "home/family",
+                    category: "Places"
+                }, {
+                    chinese: "图书馆",
+                    pinyin: "túshūguǎn",
+                    english: "library",
+                    category: "Places"
+                },
+                // lesson 8 questions
+                {
+                    chinese: "什么",
+                    pinyin: "shénme",
+                    english: "what",
+                    category: "Questions"
+                }, {
+                    chinese: "谁",
+                    pinyin: "shuí",
+                    english: "who",
+                    category: "Questions"
+                }, {
+                    chinese: "哪儿",
+                    pinyin: "nǎr",
+                    english: "where",
+                    category: "Questions"
+                }, {
+                    chinese: "为什么",
+                    pinyin: "wèishénme",
+                    english: "why",
+                    category: "Questions"
+                }, {
+                    chinese: "怎么",
+                    pinyin: "zěnme",
+                    english: "how",
+                    category: "Questions"
+                }, {
+                    chinese: "吗",
+                    pinyin: "ma",
+                    english: "question particle",
+                    category: "Particles"
+                }, {
+                    chinese: "呢",
+                    pinyin: "ne",
+                    english: "question particle",
+                    category: "Particles"
+                }, {
+                    chinese: "哪",
+                    pinyin: "nǎ",
+                    english: "which",
+                    category: "Questions"
+                },
+                // lesson 9 adjectives
+                {
+                    chinese: "大",
+                    pinyin: "dà",
+                    english: "big",
+                    category: "Adjectives"
+                }, {
+                    chinese: "小",
+                    pinyin: "xiǎo",
+                    english: "small",
+                    category: "Adjectives"
+                }, {
+                    chinese: "少",
+                    pinyin: "shǎo",
+                    english: "few",
+                    category: "Adjectives"
+                }, {
+                    chinese: "高",
+                    pinyin: "gāo",
+                    english: "tall/high",
+                    category: "Adjectives"
+                }, {
+                    chinese: "高兴",
+                    pinyin: "gāoxìng",
+                    english: "happy",
+                    category: "Adjectives"
+                }, {
+                    chinese: "漂亮",
+                    pinyin: "piàoliang",
+                    english: "beautiful",
+                    category: "Adjectives"
+                }, {
+                    chinese: "忙",
+                    pinyin: "máng",
+                    english: "busy",
+                    category: "Adjectives"
+                },
+                // lesson 10 objects
+                {
+                    chinese: "手机",
+                    pinyin: "shǒujī",
+                    english: "mobile phone",
+                    category: "Objects"
+                }, {
+                    chinese: "电脑",
+                    pinyin: "diànnǎo",
+                    english: "computer",
+                    category: "Objects"
+                }, {
+                    chinese: "电视",
+                    pinyin: "diànshì",
+                    english: "television",
+                    category: "Objects"
+                }, {
+                    chinese: "电话",
+                    pinyin: "diànhuà",
+                    english: "telephone",
+                    category: "Objects"
+                }, {
+                    chinese: "手表",
+                    pinyin: "shǒubiǎo",
+                    english: "watch",
+                    category: "Objects"
+                }, {
+                    chinese: "手镯",
+                    pinyin: "shǒuzhuó",
+                    english: "bracelet",
+                    category: "Objects"
+                }, {
+                    chinese: "手套",
+                    pinyin: "shǒutào",
+                    english: "gloves",
+                    category: "Objects"
+                }, {
+                    chinese: "椅子",
+                    pinyin: "yǐzi",
+                    english: "chair",
+                    category: "Objects"
+                }, {
+                    chinese: "桌子",
+                    pinyin: "zhuōzi",
+                    english: "table",
+                    category: "Objects"
+                }, {
+                    chinese: "书",
+                    pinyin: "shū",
+                    english: "book",
+                    category: "Objects"
+                }, {
+                    chinese: "笔",
+                    pinyin: "bǐ",
+                    english: "pen",
+                    category: "Objects"
+                }, {
+                    chinese: "猫",
+                    pinyin: "māo",
+                    english: "cat",
+                    category: "Animals"
+                }, {
+                    chinese: "狗",
+                    pinyin: "gǒu",
+                    english: "dog",
+                    category: "Animals"
+                },
+                // lesson 11 particles
+                {
+                    chinese: "的",
+                    pinyin: "de",
+                    english: "possession particle",
+                    category: "Particles"
+                }, {
+                    chinese: "了",
+                    pinyin: "le",
+                    english: "past/completion",
+                    category: "Particles"
+                }, {
+                    chinese: "过",
+                    pinyin: "guò",
+                    english: "experience particle",
+                    category: "Particles"
+                },
+                // lesson 12 erhua
+                {
+                    chinese: "小孩儿",
+                    pinyin: "xiǎoháir",
+                    english: "child",
+                    category: "Erhua"
+                }, {
+                    chinese: "小鸟儿",
+                    pinyin: "xiǎoniǎor",
+                    english: "little bird",
+                    category: "Erhua"
+                }, {
+                    chinese: "饭馆儿",
+                    pinyin: "fànguǎnr",
+                    english: "restaurant",
+                    category: "Erhua"
+                }, {
+                    chinese: "香水儿",
+                    pinyin: "xiāngshuǐr",
+                    english: "perfume",
+                    category: "Erhua"
+                },
+                // lesson 13 countries
+                {
+                    chinese: "中国",
+                    pinyin: "Zhōngguó",
+                    english: "China",
+                    category: "Countries"
+                }, {
+                    chinese: "美国",
+                    pinyin: "Měiguó",
+                    english: "America",
+                    category: "Countries"
+                }, {
+                    chinese: "英国",
+                    pinyin: "Yīngguó",
+                    english: "UK",
+                    category: "Countries"
+                }, {
+                    chinese: "法国",
+                    pinyin: "Fàguó",
+                    english: "France",
+                    category: "Countries"
+                }, {
+                    chinese: "德国",
+                    pinyin: "Déguó",
+                    english: "Germany",
+                    category: "Countries"
+                }, {
+                    chinese: "日本",
+                    pinyin: "Rìběn",
+                    english: "Japan",
+                    category: "Countries"
+                }, {
+                    chinese: "韩国",
+                    pinyin: "Hánguó",
+                    english: "Korea",
+                    category: "Countries"
+                }, {
+                    chinese: "汉语",
+                    pinyin: "Hànyǔ",
+                    english: "Chinese language",
+                    category: "Languages"
+                }, {
+                    chinese: "英语",
+                    pinyin: "Yīngyǔ",
+                    english: "English language",
+                    category: "Languages"
+                }, {
+                    chinese: "汉字",
+                    pinyin: "Hànzì",
+                    english: "Chinese character",
+                    category: "Languages"
+                },
+                // lesson 14 more verbs
+                {
+                    chinese: "学习",
+                    pinyin: "xuéxí",
+                    english: "to study",
+                    category: "Verbs"
+                }, {
+                    chinese: "练习",
+                    pinyin: "liànxí",
+                    english: "to practice",
+                    category: "Verbs"
+                }, {
+                    chinese: "复习",
+                    pinyin: "fùxí",
+                    english: "to review",
+                    category: "Verbs"
+                }, {
+                    chinese: "见面",
+                    pinyin: "jiànmiàn",
+                    english: "to meet",
+                    category: "Verbs"
+                }, {
+                    chinese: "欢迎",
+                    pinyin: "huānyíng",
+                    english: "to welcome",
+                    category: "Verbs"
+                }, {
+                    chinese: "开始",
+                    pinyin: "kāishǐ",
+                    english: "to start",
+                    category: "Verbs"
+                }, {
+                    chinese: "喜欢",
+                    pinyin: "xǐhuān",
+                    english: "to like",
+                    category: "Verbs"
+                }, {
+                    chinese: "爱",
+                    pinyin: "ài",
+                    english: "to love",
+                    category: "Verbs"
+                },
+                // lesson 15 time extras
+                {
+                    chinese: "每天",
+                    pinyin: "měitiān",
+                    english: "every day",
+                    category: "Time"
+                }, {
+                    chinese: "每年",
+                    pinyin: "měinián",
+                    english: "every year",
+                    category: "Time"
+                }, {
+                    chinese: "上午",
+                    pinyin: "shàngwǔ",
+                    english: "morning",
+                    category: "Time"
+                }, {
+                    chinese: "下午",
+                    pinyin: "xiàwǔ",
+                    english: "afternoon",
+                    category: "Time"
+                }, {
+                    chinese: "中午",
+                    pinyin: "zhōngwǔ",
+                    english: "noon",
+                    category: "Time"
+                }, {
+                    chinese: "分钟",
+                    pinyin: "fēnzhōng",
+                    english: "minute",
+                    category: "Time"
+                }, {
+                    chinese: "小时",
+                    pinyin: "xiǎoshí",
+                    english: "hour",
+                    category: "Time"
+                },
+                // additional from screenshots
+                {
+                    chinese: "口",
+                    pinyin: "kǒu",
+                    english: "mouth/measure",
+                    category: "Measure Words"
+                }, {
+                    chinese: "名字",
+                    pinyin: "míngzi",
+                    english: "name",
+                    category: "Basics"
+                }, {
+                    chinese: "兴趣",
+                    pinyin: "xìngqù",
+                    english: "interest",
+                    category: "Nouns"
+                }, {
+                    chinese: "继续",
+                    pinyin: "jìxù",
+                    english: "to continue",
+                    category: "Verbs"
+                }, {
+                    chinese: "健康",
+                    pinyin: "jiànkāng",
+                    english: "healthy",
+                    category: "Adjectives"
+                }, {
+                    chinese: "地图",
+                    pinyin: "dìtú",
+                    english: "map",
+                    category: "Objects"
+                }, {
+                    chinese: "地铁",
+                    pinyin: "dìtiě",
+                    english: "subway",
+                    category: "Transport"
+                }, {
+                    chinese: "电影",
+                    pinyin: "diànyǐng",
+                    english: "movie",
+                    category: "Entertainment"
+                }, {
+                    chinese: "音乐",
+                    pinyin: "yīnyuè",
+                    english: "music",
+                    category: "Entertainment"
+                }, {
+                    chinese: "友谊",
+                    pinyin: "yǒuyì",
+                    english: "friendship",
+                    category: "Nouns"
+                }, {
+                    chinese: "英雄",
+                    pinyin: "yīngxióng",
+                    english: "hero",
+                    category: "People"
+                }, {
+                    chinese: "危险",
+                    pinyin: "wēixiǎn",
+                    english: "dangerous",
+                    category: "Adjectives"
+                }, {
+                    chinese: "语言",
+                    pinyin: "yǔyán",
+                    english: "language",
+                    category: "Languages"
+                }, {
+                    chinese: "营养",
+                    pinyin: "yíngyǎng",
+                    english: "nutrition",
+                    category: "Nouns"
+                }, {
+                    chinese: "我们",
+                    pinyin: "wǒmen",
+                    english: "we/us",
+                    category: "People"
+                }, {
+                    chinese: "他们",
+                    pinyin: "tāmen",
+                    english: "they/them",
+                    category: "People"
+                }, {
+                    chinese: "下雨",
+                    pinyin: "xiàyǔ",
+                    english: "to rain",
+                    category: "Weather"
+                }, {
+                    chinese: "阴天",
+                    pinyin: "yīntiān",
+                    english: "cloudy",
+                    category: "Weather"
+                }, {
+                    chinese: "西瓜",
+                    pinyin: "xīguā",
+                    english: "watermelon",
+                    category: "Food"
+                }
+            ];
 
-            // LESSON 2 - Family & People
-            {
-                chinese: "我",
-                pinyin: "wǒ",
-                english: "I/me",
-                category: "People"
-            }, {
-                chinese: "他",
-                pinyin: "tā",
-                english: "he/him",
-                category: "People"
-            }, {
-                chinese: "她",
-                pinyin: "tā",
-                english: "she/her",
-                category: "People"
-            }, {
-                chinese: "爸爸",
-                pinyin: "bàba",
-                english: "father",
-                category: "Family"
-            }, {
-                chinese: "妈妈",
-                pinyin: "māma",
-                english: "mother",
-                category: "Family"
-            }, {
-                chinese: "哥哥",
-                pinyin: "gēge",
-                english: "older brother",
-                category: "Family"
-            }, {
-                chinese: "姐姐",
-                pinyin: "jiějie",
-                english: "older sister",
-                category: "Family"
-            }, {
-                chinese: "弟弟",
-                pinyin: "dìdi",
-                english: "younger brother",
-                category: "Family"
-            }, {
-                chinese: "妹妹",
-                pinyin: "mèimei",
-                english: "younger sister",
-                category: "Family"
-            }, {
-                chinese: "儿子",
-                pinyin: "érzi",
-                english: "son",
-                category: "Family"
-            }, {
-                chinese: "女儿",
-                pinyin: "nǚ'ér",
-                english: "daughter",
-                category: "Family"
-            }, {
-                chinese: "爷爷",
-                pinyin: "yéye",
-                english: "grandfather",
-                category: "Family"
-            }, {
-                chinese: "奶奶",
-                pinyin: "nǎinai",
-                english: "grandmother",
-                category: "Family"
-            }, {
-                chinese: "朋友",
-                pinyin: "péngyou",
-                english: "friend",
-                category: "People"
-            }, {
-                chinese: "同学",
-                pinyin: "tóngxué",
-                english: "classmate",
-                category: "People"
-            }, {
-                chinese: "老师",
-                pinyin: "lǎoshī",
-                english: "teacher",
-                category: "People"
-            }, {
-                chinese: "学生",
-                pinyin: "xuésheng",
-                english: "student",
-                category: "People"
-            }, {
-                chinese: "医生",
-                pinyin: "yīshēng",
-                english: "doctor",
-                category: "People"
-            }, {
-                chinese: "人",
-                pinyin: "rén",
-                english: "person/people",
-                category: "People"
-            },
+            // ---------- state ----------
+            let masterWords = words.map(w => ({...w,
+                known: false
+            }));
+            let currentWords = [...masterWords];
+            let currentIndex = 0;
+            let studied = 0;
+            let known = 0;
+            let locked = false;
 
-            // LESSON 3 - Numbers
-            {
-                chinese: "一",
-                pinyin: "yī",
-                english: "one",
-                category: "Numbers"
-            }, {
-                chinese: "二",
-                pinyin: "èr",
-                english: "two",
-                category: "Numbers"
-            }, {
-                chinese: "三",
-                pinyin: "sān",
-                english: "three",
-                category: "Numbers"
-            }, {
-                chinese: "四",
-                pinyin: "sì",
-                english: "four",
-                category: "Numbers"
-            }, {
-                chinese: "五",
-                pinyin: "wǔ",
-                english: "five",
-                category: "Numbers"
-            }, {
-                chinese: "六",
-                pinyin: "liù",
-                english: "six",
-                category: "Numbers"
-            }, {
-                chinese: "七",
-                pinyin: "qī",
-                english: "seven",
-                category: "Numbers"
-            }, {
-                chinese: "八",
-                pinyin: "bā",
-                english: "eight",
-                category: "Numbers"
-            }, {
-                chinese: "九",
-                pinyin: "jiǔ",
-                english: "nine",
-                category: "Numbers"
-            }, {
-                chinese: "十",
-                pinyin: "shí",
-                english: "ten",
-                category: "Numbers"
-            }, {
-                chinese: "百",
-                pinyin: "bǎi",
-                english: "hundred",
-                category: "Numbers"
-            }, {
-                chinese: "千",
-                pinyin: "qiān",
-                english: "thousand",
-                category: "Numbers"
-            }, {
-                chinese: "岁",
-                pinyin: "suì",
-                english: "years old",
-                category: "Numbers"
-            }, {
-                chinese: "几",
-                pinyin: "jǐ",
-                english: "how many",
-                category: "Questions"
-            }, {
-                chinese: "多",
-                pinyin: "duō",
-                english: "many/much",
-                category: "Numbers"
-            },
+            // DOM elements
+            const chineseEl = document.getElementById('chinese');
+            const pinyinEl = document.getElementById('pinyin');
+            const englishEl = document.getElementById('english');
+            const optionsEl = document.getElementById('options');
+            const feedbackEl = document.getElementById('feedback');
+            const nextBtn = document.getElementById('nextBtn');
+            const prevBtn = document.getElementById('prevBtn');
+            const nextNavBtn = document.getElementById('nextNavBtn');
+            const counterEl = document.getElementById('counter');
+            const progressEl = document.getElementById('progress');
+            const studiedEl = document.getElementById('studied');
+            const knownEl = document.getElementById('known');
+            const reviewEl = document.getElementById('review');
+            const wordCountEl = document.getElementById('wordCount');
+            const categoriesEl = document.getElementById('categories');
 
-            // LESSON 4 - Time & Days
-            {
-                chinese: "今天",
-                pinyin: "jīntiān",
-                english: "today",
-                category: "Time"
-            }, {
-                chinese: "明天",
-                pinyin: "míngtiān",
-                english: "tomorrow",
-                category: "Time"
-            }, {
-                chinese: "昨天",
-                pinyin: "zuótiān",
-                english: "yesterday",
-                category: "Time"
-            }, {
-                chinese: "今年",
-                pinyin: "jīnnián",
-                english: "this year",
-                category: "Time"
-            }, {
-                chinese: "去年",
-                pinyin: "qùnián",
-                english: "last year",
-                category: "Time"
-            }, {
-                chinese: "早上",
-                pinyin: "zǎoshang",
-                english: "morning",
-                category: "Time"
-            }, {
-                chinese: "晚上",
-                pinyin: "wǎnshang",
-                english: "evening",
-                category: "Time"
-            }, {
-                chinese: "星期",
-                pinyin: "xīngqī",
-                english: "week",
-                category: "Time"
-            }, {
-                chinese: "现在",
-                pinyin: "xiànzài",
-                english: "now",
-                category: "Time"
-            }, {
-                chinese: "时候",
-                pinyin: "shíhou",
-                english: "time/moment",
-                category: "Time"
-            },
+            // build category filters
+            const allCats = ['All', ...new Set(words.map(w => w.category))].sort();
+            allCats.forEach(cat => {
+                let btn = document.createElement('button');
+                btn.className = `cat-btn ${cat === 'All' ? 'active' : ''}`;
+                btn.textContent = cat;
+                btn.dataset.cat = cat;
+                btn.onclick = (e) => {
+                    document.querySelectorAll('.cat-btn').forEach(b => b.classList.remove('active'));
+                    e.target.classList.add('active');
+                    filterByCategory(cat);
+                };
+                categoriesEl.appendChild(btn);
+            });
 
-            // LESSON 5 - Verbs
-            {
-                chinese: "是",
-                pinyin: "shì",
-                english: "to be",
-                category: "Verbs"
-            }, {
-                chinese: "有",
-                pinyin: "yǒu",
-                english: "to have",
-                category: "Verbs"
-            }, {
-                chinese: "做",
-                pinyin: "zuò",
-                english: "to do/make",
-                category: "Verbs"
-            }, {
-                chinese: "去",
-                pinyin: "qù",
-                english: "to go",
-                category: "Verbs"
-            }, {
-                chinese: "来",
-                pinyin: "lái",
-                english: "to come",
-                category: "Verbs"
-            }, {
-                chinese: "吃",
-                pinyin: "chī",
-                english: "to eat",
-                category: "Verbs"
-            }, {
-                chinese: "喝",
-                pinyin: "hē",
-                english: "to drink",
-                category: "Verbs"
-            }, {
-                chinese: "说",
-                pinyin: "shuō",
-                english: "to speak",
-                category: "Verbs"
-            }, {
-                chinese: "读",
-                pinyin: "dú",
-                english: "to read",
-                category: "Verbs"
-            }, {
-                chinese: "写",
-                pinyin: "xiě",
-                english: "to write",
-                category: "Verbs"
-            }, {
-                chinese: "听",
-                pinyin: "tīng",
-                english: "to listen",
-                category: "Verbs"
-            }, {
-                chinese: "看",
-                pinyin: "kàn",
-                english: "to see/watch",
-                category: "Verbs"
-            }, {
-                chinese: "学",
-                pinyin: "xué",
-                english: "to learn",
-                category: "Verbs"
-            }, {
-                chinese: "叫",
-                pinyin: "jiào",
-                english: "to call/be called",
-                category: "Verbs"
-            }, {
-                chinese: "在",
-                pinyin: "zài",
-                english: "to be at",
-                category: "Verbs"
-            }, {
-                chinese: "工作",
-                pinyin: "gōngzuò",
-                english: "to work",
-                category: "Verbs"
-            }, {
-                chinese: "休息",
-                pinyin: "xiūxi",
-                english: "to rest",
-                category: "Verbs"
-            }, {
-                chinese: "洗澡",
-                pinyin: "xǐ zǎo",
-                english: "to shower",
-                category: "Verbs"
-            }, {
-                chinese: "打扫",
-                pinyin: "dǎsǎo",
-                english: "to clean",
-                category: "Verbs"
-            }, {
-                chinese: "唱歌",
-                pinyin: "chàng gē",
-                english: "to sing",
-                category: "Verbs"
-            }, {
-                chinese: "跳舞",
-                pinyin: "tiào wǔ",
-                english: "to dance",
-                category: "Verbs"
-            }, {
-                chinese: "游泳",
-                pinyin: "yóu yǒng",
-                english: "to swim",
-                category: "Verbs"
-            }, {
-                chinese: "睡觉",
-                pinyin: "shuì jiào",
-                english: "to sleep",
-                category: "Verbs"
-            },
-
-            // LESSON 6 - Food & Drink
-            {
-                chinese: "咖啡",
-                pinyin: "kāfēi",
-                english: "coffee",
-                category: "Food"
-            }, {
-                chinese: "面包",
-                pinyin: "miànbāo",
-                english: "bread",
-                category: "Food"
-            }, {
-                chinese: "面条",
-                pinyin: "miàntiáo",
-                english: "noodles",
-                category: "Food"
-            }, {
-                chinese: "米饭",
-                pinyin: "mǐfàn",
-                english: "rice",
-                category: "Food"
-            }, {
-                chinese: "水",
-                pinyin: "shuǐ",
-                english: "water",
-                category: "Food"
-            }, {
-                chinese: "茶",
-                pinyin: "chá",
-                english: "tea",
-                category: "Food"
-            }, {
-                chinese: "菜",
-                pinyin: "cài",
-                english: "vegetables/dish",
-                category: "Food"
-            }, {
-                chinese: "水果",
-                pinyin: "shuǐguǒ",
-                english: "fruit",
-                category: "Food"
-            }, {
-                chinese: "苹果",
-                pinyin: "píngguǒ",
-                english: "apple",
-                category: "Food"
-            }, {
-                chinese: "好吃",
-                pinyin: "hǎochī",
-                english: "delicious",
-                category: "Food"
-            },
-
-            // LESSON 7 - Places
-            {
-                chinese: "学校",
-                pinyin: "xuéxiào",
-                english: "school",
-                category: "Places"
-            }, {
-                chinese: "医院",
-                pinyin: "yīyuàn",
-                english: "hospital",
-                category: "Places"
-            }, {
-                chinese: "公园",
-                pinyin: "gōngyuán",
-                english: "park",
-                category: "Places"
-            }, {
-                chinese: "机场",
-                pinyin: "jīchǎng",
-                english: "airport",
-                category: "Places"
-            }, {
-                chinese: "车站",
-                pinyin: "chēzhàn",
-                english: "bus/train station",
-                category: "Places"
-            }, {
-                chinese: "商店",
-                pinyin: "shāngdiàn",
-                english: "shop/store",
-                category: "Places"
-            }, {
-                chinese: "家",
-                pinyin: "jiā",
-                english: "home/family",
-                category: "Places"
-            }, {
-                chinese: "图书馆",
-                pinyin: "túshūguǎn",
-                english: "library",
-                category: "Places"
-            },
-
-            // LESSON 8 - Question Words
-            {
-                chinese: "什么",
-                pinyin: "shénme",
-                english: "what",
-                category: "Questions"
-            }, {
-                chinese: "谁",
-                pinyin: "shuí",
-                english: "who",
-                category: "Questions"
-            }, {
-                chinese: "哪儿",
-                pinyin: "nǎr",
-                english: "where",
-                category: "Questions"
-            }, {
-                chinese: "为什么",
-                pinyin: "wèishénme",
-                english: "why",
-                category: "Questions"
-            }, {
-                chinese: "怎么",
-                pinyin: "zěnme",
-                english: "how",
-                category: "Questions"
-            }, {
-                chinese: "吗",
-                pinyin: "ma",
-                english: "question particle",
-                category: "Particles"
-            }, {
-                chinese: "呢",
-                pinyin: "ne",
-                english: "question particle",
-                category: "Particles"
-            }, {
-                chinese: "哪",
-                pinyin: "nǎ",
-                english: "which",
-                category: "Questions"
-            },
-
-            // LESSON 9 - Adjectives
-            {
-                chinese: "大",
-                pinyin: "dà",
-                english: "big",
-                category: "Adjectives"
-            }, {
-                chinese: "小",
-                pinyin: "xiǎo",
-                english: "small",
-                category: "Adjectives"
-            }, {
-                chinese: "多",
-                pinyin: "duō",
-                english: "many",
-                category: "Adjectives"
-            }, {
-                chinese: "少",
-                pinyin: "shǎo",
-                english: "few",
-                category: "Adjectives"
-            }, {
-                chinese: "高",
-                pinyin: "gāo",
-                english: "tall/high",
-                category: "Adjectives"
-            }, {
-                chinese: "高兴",
-                pinyin: "gāoxìng",
-                english: "happy",
-                category: "Adjectives"
-            }, {
-                chinese: "漂亮",
-                pinyin: "piàoliang",
-                english: "beautiful",
-                category: "Adjectives"
-            }, {
-                chinese: "好吃",
-                pinyin: "hǎochī",
-                english: "tasty",
-                category: "Adjectives"
-            }, {
-                chinese: "忙",
-                pinyin: "máng",
-                english: "busy",
-                category: "Adjectives"
-            },
-
-            // LESSON 10 - Objects
-            {
-                chinese: "手机",
-                pinyin: "shǒujī",
-                english: "mobile phone",
-                category: "Objects"
-            }, {
-                chinese: "电脑",
-                pinyin: "diànnǎo",
-                english: "computer",
-                category: "Objects"
-            }, {
-                chinese: "电视",
-                pinyin: "diànshì",
-                english: "television",
-                category: "Objects"
-            }, {
-                chinese: "电话",
-                pinyin: "diànhuà",
-                english: "telephone",
-                category: "Objects"
-            }, {
-                chinese: "手表",
-                pinyin: "shǒubiǎo",
-                english: "watch",
-                category: "Objects"
-            }, {
-                chinese: "手镯",
-                pinyin: "shǒuzhuó",
-                english: "bracelet",
-                category: "Objects"
-            }, {
-                chinese: "手套",
-                pinyin: "shǒutào",
-                english: "gloves",
-                category: "Objects"
-            }, {
-                chinese: "椅子",
-                pinyin: "yǐzi",
-                english: "chair",
-                category: "Objects"
-            }, {
-                chinese: "桌子",
-                pinyin: "zhuōzi",
-                english: "table",
-                category: "Objects"
-            }, {
-                chinese: "书",
-                pinyin: "shū",
-                english: "book",
-                category: "Objects"
-            }, {
-                chinese: "笔",
-                pinyin: "bǐ",
-                english: "pen",
-                category: "Objects"
-            }, {
-                chinese: "猫",
-                pinyin: "māo",
-                english: "cat",
-                category: "Animals"
-            }, {
-                chinese: "狗",
-                pinyin: "gǒu",
-                english: "dog",
-                category: "Animals"
-            },
-
-            // LESSON 11 - Grammar Particles
-            {
-                chinese: "的",
-                pinyin: "de",
-                english: "possession particle",
-                category: "Particles"
-            }, {
-                chinese: "了",
-                pinyin: "le",
-                english: "past/completion",
-                category: "Particles"
-            }, {
-                chinese: "过",
-                pinyin: "guò",
-                english: "experience particle",
-                category: "Particles"
-            },
-
-            // LESSON 12 - Erhua Words (from screenshots)
-            {
-                chinese: "小孩儿",
-                pinyin: "xiǎoháir",
-                english: "child",
-                category: "Erhua"
-            }, {
-                chinese: "小鸟儿",
-                pinyin: "xiǎoniǎor",
-                english: "little bird",
-                category: "Erhua"
-            }, {
-                chinese: "饭馆儿",
-                pinyin: "fànguǎnr",
-                english: "restaurant",
-                category: "Erhua"
-            }, {
-                chinese: "香水儿",
-                pinyin: "xiāngshuǐr",
-                english: "perfume",
-                category: "Erhua"
-            },
-
-            // LESSON 13 - Countries & Languages
-            {
-                chinese: "中国",
-                pinyin: "Zhōngguó",
-                english: "China",
-                category: "Countries"
-            }, {
-                chinese: "美国",
-                pinyin: "Měiguó",
-                english: "America",
-                category: "Countries"
-            }, {
-                chinese: "英国",
-                pinyin: "Yīngguó",
-                english: "UK",
-                category: "Countries"
-            }, {
-                chinese: "法国",
-                pinyin: "Fàguó",
-                english: "France",
-                category: "Countries"
-            }, {
-                chinese: "德国",
-                pinyin: "Déguó",
-                english: "Germany",
-                category: "Countries"
-            }, {
-                chinese: "日本",
-                pinyin: "Rìběn",
-                english: "Japan",
-                category: "Countries"
-            }, {
-                chinese: "韩国",
-                pinyin: "Hánguó",
-                english: "Korea",
-                category: "Countries"
-            }, {
-                chinese: "汉语",
-                pinyin: "Hànyǔ",
-                english: "Chinese language",
-                category: "Languages"
-            }, {
-                chinese: "英语",
-                pinyin: "Yīngyǔ",
-                english: "English language",
-                category: "Languages"
-            }, {
-                chinese: "汉字",
-                pinyin: "Hànzì",
-                english: "Chinese character",
-                category: "Languages"
-            },
-
-            // LESSON 14 - More Verbs/Activities
-            {
-                chinese: "学习",
-                pinyin: "xuéxí",
-                english: "to study",
-                category: "Verbs"
-            }, {
-                chinese: "练习",
-                pinyin: "liànxí",
-                english: "to practice",
-                category: "Verbs"
-            }, {
-                chinese: "复习",
-                pinyin: "fùxí",
-                english: "to review",
-                category: "Verbs"
-            }, {
-                chinese: "见面",
-                pinyin: "jiànmiàn",
-                english: "to meet",
-                category: "Verbs"
-            }, {
-                chinese: "欢迎",
-                pinyin: "huānyíng",
-                english: "to welcome",
-                category: "Verbs"
-            }, {
-                chinese: "开始",
-                pinyin: "kāishǐ",
-                english: "to start",
-                category: "Verbs"
-            }, {
-                chinese: "喜欢",
-                pinyin: "xǐhuān",
-                english: "to like",
-                category: "Verbs"
-            }, {
-                chinese: "爱",
-                pinyin: "ài",
-                english: "to love",
-                category: "Verbs"
-            },
-
-            // LESSON 15 - Time Words & More
-            {
-                chinese: "每天",
-                pinyin: "měitiān",
-                english: "every day",
-                category: "Time"
-            }, {
-                chinese: "每年",
-                pinyin: "měinián",
-                english: "every year",
-                category: "Time"
-            }, {
-                chinese: "上午",
-                pinyin: "shàngwǔ",
-                english: "morning",
-                category: "Time"
-            }, {
-                chinese: "下午",
-                pinyin: "xiàwǔ",
-                english: "afternoon",
-                category: "Time"
-            }, {
-                chinese: "中午",
-                pinyin: "zhōngwǔ",
-                english: "noon",
-                category: "Time"
-            }, {
-                chinese: "分钟",
-                pinyin: "fēnzhōng",
-                english: "minute",
-                category: "Time"
-            }, {
-                chinese: "小时",
-                pinyin: "xiǎoshí",
-                english: "hour",
-                category: "Time"
-            },
-
-            // Additional words from screenshots
-            {
-                chinese: "口",
-                pinyin: "kǒu",
-                english: "mouth/measure word",
-                category: "Measure Words"
-            }, {
-                chinese: "名字",
-                pinyin: "míngzi",
-                english: "name",
-                category: "Basics"
-            }, {
-                chinese: "兴趣",
-                pinyin: "xìngqù",
-                english: "interest/hobby",
-                category: "Nouns"
-            }, {
-                chinese: "继续",
-                pinyin: "jìxù",
-                english: "to continue",
-                category: "Verbs"
-            }, {
-                chinese: "健康",
-                pinyin: "jiànkāng",
-                english: "health/healthy",
-                category: "Adjectives"
-            }, {
-                chinese: "地图",
-                pinyin: "dìtú",
-                english: "map",
-                category: "Objects"
-            }, {
-                chinese: "地铁",
-                pinyin: "dìtiě",
-                english: "subway",
-                category: "Transport"
-            }, {
-                chinese: "电影",
-                pinyin: "diànyǐng",
-                english: "movie",
-                category: "Entertainment"
-            }, {
-                chinese: "音乐",
-                pinyin: "yīnyuè",
-                english: "music",
-                category: "Entertainment"
-            }, {
-                chinese: "友谊",
-                pinyin: "yǒuyì",
-                english: "friendship",
-                category: "Nouns"
-            }, {
-                chinese: "英雄",
-                pinyin: "yīngxióng",
-                english: "hero",
-                category: "People"
-            }, {
-                chinese: "危险",
-                pinyin: "wēixiǎn",
-                english: "dangerous",
-                category: "Adjectives"
-            }, {
-                chinese: "语言",
-                pinyin: "yǔyán",
-                english: "language",
-                category: "Languages"
-            }, {
-                chinese: "营养",
-                pinyin: "yíngyǎng",
-                english: "nutrition",
-                category: "Nouns"
-            }, {
-                chinese: "我们",
-                pinyin: "wǒmen",
-                english: "we/us",
-                category: "People"
-            }, {
-                chinese: "他们",
-                pinyin: "tāmen",
-                english: "they/them",
-                category: "People"
-            }, {
-                chinese: "下雨",
-                pinyin: "xiàyǔ",
-                english: "to rain",
-                category: "Weather"
-            }, {
-                chinese: "阴天",
-                pinyin: "yīntiān",
-                english: "cloudy day",
-                category: "Weather"
-            }, {
-                chinese: "西瓜",
-                pinyin: "xīguā",
-                english: "watermelon",
-                category: "Food"
-            }
-        ];
-
-        // Game state
-        let currentWords = words.map(w => ({...w,
-            known: false
-        }));
-        let currentIndex = 0;
-        let studied = 0;
-        let known = 0;
-        let locked = false;
-
-        // Get elements
-        const card = document.getElementById('card');
-        const chineseEl = document.getElementById('chinese');
-        const pinyinEl = document.getElementById('pinyin');
-        const englishEl = document.getElementById('english');
-        const optionsEl = document.getElementById('options');
-        const feedbackEl = document.getElementById('feedback');
-        const nextBtn = document.getElementById('nextBtn');
-        const prevBtn = document.getElementById('prevBtn');
-        const nextNavBtn = document.getElementById('nextNavBtn');
-        const counterEl = document.getElementById('counter');
-        const progressEl = document.getElementById('progress');
-        const studiedEl = document.getElementById('studied');
-        const knownEl = document.getElementById('known');
-        const reviewEl = document.getElementById('review');
-        const wordCountEl = document.getElementById('wordCount');
-        const categoriesEl = document.getElementById('categories');
-
-        // Get unique categories
-        const categories = ['All', ...new Set(words.map(w => w.category))].sort();
-
-        // Create category buttons
-        categories.forEach(cat => {
-            const btn = document.createElement('button');
-            btn.className = `cat-btn ${cat === 'All' ? 'active' : ''}`;
-            btn.textContent = cat;
-            btn.dataset.cat = cat;
-            btn.onclick = (e) => {
-                filterByCategory(cat);
-                document.querySelectorAll('.cat-btn').forEach(b => b.classList.remove('active'));
-                e.target.classList.add('active');
-            };
-            categoriesEl.appendChild(btn);
-        });
-
-        // Filter by category
-        function filterByCategory(cat) {
-            if (cat === 'All') {
-                currentWords = words.map(w => ({...w,
-                    known: false
-                }));
-            } else {
-                currentWords = words.filter(w => w.category === cat).map(w => ({...w,
-                    known: false
-                }));
-            }
-            studied = 0;
-            known = 0;
-            currentIndex = 0;
-            updateDisplay();
-            wordCountEl.textContent = `📚 ${currentWords.length} words in this category`;
-        }
-
-        // Update word count display
-        wordCountEl.textContent = `📚 ${words.length} total words`;
-
-        // Flip card
-        card.onclick = () => {
-            englishEl.style.display = englishEl.style.display === 'none' ? 'block' : 'none';
-        };
-
-        // Get options for multiple choice
-        function getOptions(correct) {
-            let all = words.map(w => w.english);
-            let others = all.filter(e => e !== correct);
-            let opts = [correct];
-
-            // Shuffle others array
-            for (let i = others.length - 1; i > 0; i--) {
-                const j = Math.floor(Math.random() * (i + 1));
-                [others[i], others[j]] = [others[j], others[i]];
+            function filterByCategory(cat) {
+                if (cat === 'All') {
+                    currentWords = masterWords.map(w => ({...w,
+                        known: false
+                    }));
+                } else {
+                    currentWords = masterWords.filter(w => w.category === cat).map(w => ({...w,
+                        known: false
+                    }));
+                }
+                studied = 0;
+                known = 0;
+                currentIndex = 0;
+                updateDisplay();
+                wordCountEl.textContent = `📚 ${currentWords.length} words · ${cat}`;
             }
 
-            // Add unique options
-            for (let i = 0; i < others.length && opts.length < 4; i++) {
-                if (!opts.includes(others[i])) {
-                    opts.push(others[i]);
+            // generate 4 unique options
+            function getOptions(correct) {
+                let all = masterWords.map(w => w.english);
+                let others = all.filter(e => e !== correct);
+                // shuffle once
+                for (let i = others.length - 1; i > 0; i--) {
+                    const j = Math.floor(Math.random() * (i + 1));
+                    [others[i], others[j]] = [others[j], others[i]];
+                }
+                let opts = [correct];
+                for (let i = 0; i < others.length && opts.length < 4; i++) {
+                    if (!opts.includes(others[i])) opts.push(others[i]);
+                }
+                // shuffle final
+                for (let i = opts.length - 1; i > 0; i--) {
+                    const j = Math.floor(Math.random() * (i + 1));
+                    [opts[i], opts[j]] = [opts[j], opts[i]];
+                }
+                return opts;
+            }
+
+            function updateDisplay() {
+                if (!currentWords.length) {
+                    chineseEl.textContent = "🎉";
+                    pinyinEl.textContent = "all done!";
+                    englishEl.textContent = "pick another category";
+                    optionsEl.innerHTML = '';
+                    feedbackEl.textContent = '👆 choose category above';
+                    nextBtn.disabled = true;
+                    prevBtn.disabled = true;
+                    nextNavBtn.disabled = true;
+                    counterEl.textContent = `0/0`;
+                    progressEl.style.width = '0%';
+                    studiedEl.textContent = studied;
+                    knownEl.textContent = known;
+                    reviewEl.textContent = 0;
+                    return;
+                }
+
+                let word = currentWords[currentIndex];
+                chineseEl.textContent = word.chinese;
+                pinyinEl.textContent = word.pinyin;
+                englishEl.textContent = word.english;
+                englishEl.style.display = 'none';
+
+                let opts = getOptions(word.english);
+                optionsEl.innerHTML = '';
+                opts.forEach(opt => {
+                    let btn = document.createElement('button');
+                    btn.className = 'option';
+                    btn.textContent = opt;
+                    btn.onclick = () => {
+                        if (locked) return;
+                        if (opt === word.english) {
+                            btn.classList.add('correct');
+                            feedbackEl.innerHTML = '✅ correct!';
+                            if (!currentWords[currentIndex].known) {
+                                currentWords[currentIndex].known = true;
+                                known++;
+                            }
+                            studied++;
+                            locked = true;
+                            nextBtn.disabled = false;
+                            document.querySelectorAll('.option').forEach(b => b.disabled = true);
+                        } else {
+                            btn.classList.add('wrong');
+                            feedbackEl.innerHTML = `❌ answer: "${word.english}"`;
+                            btn.disabled = true;
+                        }
+                        updateStats();
+                    };
+                    optionsEl.appendChild(btn);
+                });
+
+                feedbackEl.textContent = 'choose meaning';
+                locked = false;
+                nextBtn.disabled = true;
+                counterEl.textContent = `${currentIndex+1}/${currentWords.length}`;
+                progressEl.style.width = `${((currentIndex+1)/currentWords.length)*100}%`;
+                prevBtn.disabled = currentIndex === 0;
+                nextNavBtn.disabled = currentIndex === currentWords.length - 1;
+                updateStats();
+            }
+
+            function nextCard() {
+                if (currentIndex < currentWords.length - 1) {
+                    currentIndex++;
+                    updateDisplay();
                 }
             }
 
-            // Shuffle final options
-            for (let i = opts.length - 1; i > 0; i--) {
-                const j = Math.floor(Math.random() * (i + 1));
-                [opts[i], opts[j]] = [opts[j], opts[i]];
+            function prevCard() {
+                if (currentIndex > 0) {
+                    currentIndex--;
+                    updateDisplay();
+                }
             }
 
-            return opts;
-        }
-
-        // Update display
-        function updateDisplay() {
-            if (!currentWords.length) {
-                chineseEl.textContent = "🎉";
-                pinyinEl.textContent = "All done!";
-                englishEl.textContent = "No words in this category";
-                optionsEl.innerHTML = '';
-                feedbackEl.textContent = 'Select another category';
-                nextBtn.disabled = true;
-                prevBtn.disabled = true;
-                nextNavBtn.disabled = true;
-                counterEl.textContent = `0 / 0`;
-                progressEl.style.width = `0%`;
-                return;
+            function updateStats() {
+                studiedEl.textContent = studied;
+                knownEl.textContent = known;
+                reviewEl.textContent = currentWords.filter(w => !w.known).length;
             }
 
-            let word = currentWords[currentIndex];
-            chineseEl.textContent = word.chinese;
-            pinyinEl.textContent = word.pinyin;
-            englishEl.textContent = word.english;
-            englishEl.style.display = 'none';
-
-            let opts = getOptions(word.english);
-            optionsEl.innerHTML = '';
-            opts.forEach(opt => {
-                let btn = document.createElement('button');
-                btn.className = 'option';
-                btn.textContent = opt;
-                btn.onclick = () => {
-                    if (locked) return;
-                    if (opt === word.english) {
-                        btn.classList.add('correct');
-                        feedbackEl.innerHTML = '✅ Correct! Well done!';
-                        if (!currentWords[currentIndex].known) {
-                            currentWords[currentIndex].known = true;
-                            known++;
-                        }
-                        studied++;
-                        locked = true;
-                        nextBtn.disabled = false;
-                        document.querySelectorAll('.option').forEach(b => b.disabled = true);
-                    } else {
-                        btn.classList.add('wrong');
-                        feedbackEl.innerHTML = `❌ Not quite. The answer is: "${word.english}"`;
-                        btn.disabled = true;
-                    }
-                    updateStats();
-                };
-                optionsEl.appendChild(btn);
-            });
-
-            feedbackEl.textContent = 'Choose the correct meaning';
-            locked = false;
-            nextBtn.disabled = true;
-            counterEl.textContent = `${currentIndex + 1} / ${currentWords.length}`;
-            progressEl.style.width = `${((currentIndex + 1) / currentWords.length) * 100}%`;
-            prevBtn.disabled = currentIndex === 0;
-            nextNavBtn.disabled = currentIndex === currentWords.length - 1;
-            updateStats();
-        }
-
-        function nextCard() {
-            if (currentIndex < currentWords.length - 1) {
-                currentIndex++;
-                updateDisplay();
-            }
-        }
-
-        function prevCard() {
-            if (currentIndex > 0) {
-                currentIndex--;
-                updateDisplay();
-            }
-        }
-
-        function updateStats() {
-            studiedEl.textContent = studied;
-            knownEl.textContent = known;
-            reviewEl.textContent = currentWords.filter(w => !w.known).length;
-        }
-
-        // Event listeners
-        nextBtn.onclick = nextCard;
-        prevBtn.onclick = prevCard;
-        nextNavBtn.onclick = nextCard;
-
-        // Keyboard shortcuts
-        document.onkeydown = (e) => {
-            if (e.key === 'ArrowLeft') prevCard();
-            if (e.key === 'ArrowRight') nextCard();
-            if (e.key === ' ') {
-                e.preventDefault();
+            // event listeners
+            nextBtn.onclick = nextCard;
+            prevBtn.onclick = prevCard;
+            nextNavBtn.onclick = nextCard;
+            document.getElementById('card').onclick = () => {
                 englishEl.style.display = englishEl.style.display === 'none' ? 'block' : 'none';
-            }
-        };
+            };
 
-        // Start
-        updateDisplay();
+            // keyboard (laptop)
+            document.onkeydown = (e) => {
+                if (e.key === 'ArrowLeft') prevCard();
+                if (e.key === 'ArrowRight') nextCard();
+                if (e.key === ' ') {
+                    e.preventDefault();
+                    englishEl.style.display = englishEl.style.display === 'none' ? 'block' : 'none';
+                }
+            };
+
+            // init
+            wordCountEl.textContent = `📚 ${words.length} total words`;
+            updateDisplay();
+        })();
     </script>
 </body>
 
