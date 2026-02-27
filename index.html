@@ -4,96 +4,615 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>🐼 Chinese Flash Card Game</title>
-    <link rel="stylesheet" href="style.css">
+    <title>🐼 Chinese Flash Cards</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif;
+            background: linear-gradient(145deg, #8B0000 0%, #B22222 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 16px;
+        }
+        
+        .game-container {
+            max-width: 700px;
+            width: 100%;
+            background: white;
+            border-radius: 40px;
+            padding: 25px;
+            box-shadow: 0 30px 60px rgba(0, 0, 0, 0.4);
+        }
+        
+        .header {
+            text-align: center;
+            margin-bottom: 25px;
+        }
+        
+        h1 {
+            font-size: 2.2em;
+            color: #8B0000;
+        }
+        
+        .subtitle {
+            font-size: 0.9em;
+            color: #666;
+            margin-top: 5px;
+        }
+        
+        .stats {
+            display: flex;
+            justify-content: space-between;
+            background: #fef0f0;
+            padding: 15px 20px;
+            border-radius: 50px;
+            margin-bottom: 25px;
+        }
+        
+        .stat-item {
+            text-align: center;
+        }
+        
+        .stat-label {
+            font-size: 0.9em;
+            color: #666;
+        }
+        
+        .stat-number {
+            font-size: 1.8em;
+            font-weight: bold;
+            color: #8B0000;
+        }
+        
+        .flashcard {
+            background: linear-gradient(145deg, #8B0000, #B22222);
+            border-radius: 30px;
+            padding: 30px;
+            text-align: center;
+            cursor: pointer;
+            margin-bottom: 20px;
+            border: 3px solid #ffd7a5;
+            min-height: 250px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            transition: transform 0.2s;
+        }
+        
+        .flashcard:hover {
+            transform: scale(1.02);
+        }
+        
+        .chinese {
+            font-size: 5rem;
+            color: white;
+            margin-bottom: 10px;
+            line-height: 1.2;
+        }
+        
+        .pinyin {
+            font-size: 2rem;
+            color: rgba(255, 255, 255, 0.9);
+            font-style: italic;
+        }
+        
+        .english {
+            font-size: 2rem;
+            color: #8B0000;
+            background: white;
+            padding: 15px;
+            border-radius: 20px;
+            margin-top: 15px;
+            font-weight: bold;
+        }
+        
+        .hint {
+            text-align: center;
+            color: #a16161;
+            margin-bottom: 20px;
+            font-size: 1.1rem;
+        }
+        
+        .options {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+            margin: 20px 0;
+        }
+        
+        .option {
+            background: white;
+            border: 3px solid #e0b6b6;
+            border-radius: 40px;
+            padding: 15px;
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: #4d1f1f;
+            cursor: pointer;
+            box-shadow: 0 5px 0 #bb8f8f;
+            transition: all 0.2s;
+        }
+        
+        .option:hover:not(:disabled) {
+            background: #fff1e0;
+            transform: translateY(-2px);
+            box-shadow: 0 7px 0 #bb8f8f;
+        }
+        
+        .option.correct {
+            background: #28a745;
+            color: white;
+            border-color: #1e7e34;
+        }
+        
+        .option.wrong {
+            background: #dc3545;
+            color: white;
+            border-color: #a71d2a;
+            text-decoration: line-through;
+        }
+        
+        .option:disabled {
+            opacity: 0.7;
+            cursor: not-allowed;
+            transform: none;
+        }
+        
+        .feedback {
+            text-align: center;
+            font-size: 1.3rem;
+            padding: 15px;
+            background: #fff8f0;
+            border-radius: 30px;
+            margin: 15px 0;
+            min-height: 70px;
+        }
+        
+        .next-btn {
+            background: #8B0000;
+            color: white;
+            font-size: 1.5rem;
+            padding: 15px;
+            border-radius: 40px;
+            border: none;
+            cursor: pointer;
+            width: 100%;
+            margin: 10px 0;
+            font-weight: bold;
+            box-shadow: 0 5px 0 #4d0000;
+        }
+        
+        .next-btn:active:not(:disabled) {
+            transform: translateY(3px);
+            box-shadow: 0 2px 0 #4d0000;
+        }
+        
+        .next-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+        
+        .nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin: 20px 0;
+        }
+        
+        .nav-btn {
+            background: #ffead2;
+            border: 2px solid #dba1a1;
+            padding: 10px 20px;
+            border-radius: 30px;
+            color: #8B0000;
+            font-weight: 600;
+            cursor: pointer;
+        }
+        
+        .nav-btn:disabled {
+            opacity: 0.3;
+            cursor: not-allowed;
+        }
+        
+        .counter {
+            font-size: 1.2rem;
+            background: #f7d7d7;
+            padding: 8px 20px;
+            border-radius: 30px;
+        }
+        
+        .progress-bar {
+            width: 100%;
+            height: 10px;
+            background: #f0f0f0;
+            border-radius: 5px;
+            margin: 20px 0;
+        }
+        
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #8B0000, #B22222);
+            border-radius: 5px;
+            width: 0%;
+            transition: width 0.3s;
+        }
+        
+        .categories {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            justify-content: center;
+            margin-top: 20px;
+        }
+        
+        .cat-btn {
+            padding: 8px 15px;
+            border: 2px solid #8B0000;
+            border-radius: 25px;
+            background: transparent;
+            color: #8B0000;
+            cursor: pointer;
+            font-size: 0.9rem;
+            transition: all 0.3s;
+        }
+        
+        .cat-btn:hover {
+            background: #8B0000;
+            color: white;
+        }
+        
+        .cat-btn.active {
+            background: #8B0000;
+            color: white;
+        }
+        
+        @media (max-width: 500px) {
+            .chinese {
+                font-size: 4rem;
+            }
+            .options {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
 </head>
 
 <body>
     <div class="game-container">
         <div class="header">
-            <h1>🇨🇳 猜词挑战 <span class="subtitle">Chinese Flash Cards</span></h1>
+            <h1>🐼 猜词挑战</h1>
+            <div class="subtitle">Chinese Flash Cards</div>
         </div>
 
-        <!-- Stats Bar -->
-        <div class="stats-row">
+        <div class="stats">
             <div class="stat-item">
-                <span class="stat-label">Cards Studied</span>
-                <span id="studied" class="stat-value">0</span>
-            </div>
-            <div class="stat-item">
-                <span class="stat-label">Known</span>
-                <span id="known" class="stat-value">0</span>
+                <div class="stat-label">Studied</div>
+                <div class="stat-number" id="studied">0</div>
             </div>
             <div class="stat-item">
-                <span class="stat-label">To Review</span>
-                <span id="review" class="stat-value">0</span>
+                <div class="stat-label">Known</div>
+                <div class="stat-number" id="known">0</div>
             </div>
-        </div>
-
-        <!-- Main Game Area -->
-        <div class="game-area">
-            <!-- Flashcard -->
-            <div class="card-container">
-                <div class="flashcard" id="flashcard">
-                    <div class="card-inner" id="cardInner">
-                        <div class="card-front">
-                            <div class="chinese-char" id="chineseChar">你</div>
-                            <div class="pinyin" id="pinyin">nǐ</div>
-                        </div>
-                        <div class="card-back">
-                            <div class="english-word" id="englishWord">you</div>
-                        </div>
-                    </div>
-                </div>
-                <div class="hint-text">👆 Click card to flip</div>
-            </div>
-
-            <!-- Multiple Choice Options -->
-            <div class="options-area">
-                <div class="options-grid" id="optionsGrid">
-                    <!-- Options will be inserted here by JavaScript -->
-                </div>
-            </div>
-
-            <!-- Feedback Message -->
-            <div class="feedback" id="feedback">
-                🤔 Choose the correct English meaning
-            </div>
-
-            <!-- Next Button (appears after correct answer) -->
-            <div class="next-button-container">
-                <button class="next-btn" id="nextBtn" disabled>▶ Next Card</button>
+            <div class="stat-item">
+                <div class="stat-label">Review</div>
+                <div class="stat-number" id="review">0</div>
             </div>
         </div>
 
-        <!-- Navigation Controls -->
-        <div class="navigation">
+        <div class="flashcard" id="flashcard">
+            <div class="chinese" id="chinese">你</div>
+            <div class="pinyin" id="pinyin">nǐ</div>
+            <div class="english" id="english" style="display: none;">you</div>
+        </div>
+        <div class="hint">👆 Click card to see English</div>
+
+        <div class="options" id="options"></div>
+
+        <div class="feedback" id="feedback">Choose the correct English meaning</div>
+
+        <button class="next-btn" id="nextBtn" disabled>▶ Next Card</button>
+
+        <div class="nav">
             <button class="nav-btn" id="prevBtn">◀ Previous</button>
-            <span class="card-counter" id="cardCounter">1 / <span id="totalCards">0</span></span>
-            <button class="nav-btn" id="forwardBtn">Next ▶</button>
+            <span class="counter" id="counter">1 / 0</span>
+            <button class="nav-btn" id="nextNavBtn">Next ▶</button>
         </div>
 
-        <!-- Progress Bar -->
-        <div class="progress-section">
-            <div class="progress-bar">
-                <div class="progress-fill" id="progressFill"></div>
-            </div>
+        <div class="progress-bar">
+            <div class="progress-fill" id="progress"></div>
         </div>
 
-        <!-- Category Filters -->
-        <div class="category-filters">
-            <button class="filter-btn active" data-category="all">All</button>
-            <button class="filter-btn" data-category="greetings">Greetings</button>
-            <button class="filter-btn" data-category="basics">Basics</button>
-            <button class="filter-btn" data-category="numbers">Numbers</button>
-            <button class="filter-btn" data-category="food">Food</button>
-            <button class="filter-btn" data-category="people">People</button>
-            <button class="filter-btn" data-category="places">Places</button>
-            <button class="filter-btn" data-category="action">Actions</button>
+        <div class="categories">
+            <button class="cat-btn active" data-cat="all">All</button>
+            <button class="cat-btn" data-cat="greetings">Greetings</button>
+            <button class="cat-btn" data-cat="basics">Basics</button>
+            <button class="cat-btn" data-cat="numbers">Numbers</button>
+            <button class="cat-btn" data-cat="food">Food</button>
+            <button class="cat-btn" data-cat="people">People</button>
+            <button class="cat-btn" data-cat="places">Places</button>
+            <button class="cat-btn" data-cat="action">Actions</button>
         </div>
     </div>
 
-    <script src="script.js"></script>
+    <script>
+        // ==================== VOCABULARY DATA ====================
+        const vocabulary = [{
+            chinese: "你",
+            pinyin: "nǐ",
+            english: "you",
+            category: "basics"
+        }, {
+            chinese: "好",
+            pinyin: "hǎo",
+            english: "good",
+            category: "basics"
+        }, {
+            chinese: "你好",
+            pinyin: "nǐ hǎo",
+            english: "hello",
+            category: "greetings"
+        }, {
+            chinese: "再见",
+            pinyin: "zài jiàn",
+            english: "goodbye",
+            category: "greetings"
+        }, {
+            chinese: "谢谢",
+            pinyin: "xiè xiè",
+            english: "thank you",
+            category: "greetings"
+        }, {
+            chinese: "我",
+            pinyin: "wǒ",
+            english: "I / me",
+            category: "people"
+        }, {
+            chinese: "是",
+            pinyin: "shì",
+            english: "to be / yes",
+            category: "basics"
+        }, {
+            chinese: "不",
+            pinyin: "bù",
+            english: "no / not",
+            category: "basics"
+        }, {
+            chinese: "叫",
+            pinyin: "jiào",
+            english: "call / named",
+            category: "basics"
+        }, {
+            chinese: "名字",
+            pinyin: "míngzi",
+            english: "name",
+            category: "basics"
+        }, {
+            chinese: "老师",
+            pinyin: "lǎoshī",
+            english: "teacher",
+            category: "people"
+        }, {
+            chinese: "学生",
+            pinyin: "xuésheng",
+            english: "student",
+            category: "people"
+        }, {
+            chinese: "一",
+            pinyin: "yī",
+            english: "one",
+            category: "numbers"
+        }, {
+            chinese: "二",
+            pinyin: "èr",
+            english: "two",
+            category: "numbers"
+        }, {
+            chinese: "三",
+            pinyin: "sān",
+            english: "three",
+            category: "numbers"
+        }, {
+            chinese: "咖啡",
+            pinyin: "kāfēi",
+            english: "coffee",
+            category: "food"
+        }, {
+            chinese: "面包",
+            pinyin: "miànbāo",
+            english: "bread",
+            category: "food"
+        }, {
+            chinese: "医院",
+            pinyin: "yīyuàn",
+            english: "hospital",
+            category: "places"
+        }, {
+            chinese: "公园",
+            pinyin: "gōngyuán",
+            english: "park",
+            category: "places"
+        }, {
+            chinese: "吃",
+            pinyin: "chī",
+            english: "to eat",
+            category: "action"
+        }, {
+            chinese: "喝",
+            pinyin: "hē",
+            english: "to drink",
+            category: "action"
+        }];
+
+        // Game state
+        let cards = vocabulary.map(c => ({...c,
+            known: false
+        }));
+        let currentIndex = 0;
+        let studied = 0;
+        let known = 0;
+        let locked = false;
+
+        // DOM elements
+        const flashcard = document.getElementById('flashcard');
+        const chineseEl = document.getElementById('chinese');
+        const pinyinEl = document.getElementById('pinyin');
+        const englishEl = document.getElementById('english');
+        const optionsEl = document.getElementById('options');
+        const feedbackEl = document.getElementById('feedback');
+        const nextBtn = document.getElementById('nextBtn');
+        const prevBtn = document.getElementById('prevBtn');
+        const nextNavBtn = document.getElementById('nextNavBtn');
+        const counterEl = document.getElementById('counter');
+        const progressEl = document.getElementById('progress');
+        const studiedEl = document.getElementById('studied');
+        const knownEl = document.getElementById('known');
+        const reviewEl = document.getElementById('review');
+
+        // Flip card
+        flashcard.addEventListener('click', () => {
+            englishEl.style.display = englishEl.style.display === 'none' ? 'block' : 'none';
+        });
+
+        // Get random options
+        function getRandomOptions(correct, count = 4) {
+            let all = [...new Set(vocabulary.map(c => c.english))];
+            let others = all.filter(e => e !== correct);
+            let opts = [correct];
+            while (opts.length < count && others.length) {
+                let rand = others[Math.floor(Math.random() * others.length)];
+                if (!opts.includes(rand)) opts.push(rand);
+            }
+            while (opts.length < count) opts.push('???');
+            return opts.sort(() => Math.random() - 0.5);
+        }
+
+        // Update display
+        function updateDisplay() {
+            let card = cards[currentIndex];
+            chineseEl.textContent = card.chinese;
+            pinyinEl.textContent = card.pinyin;
+            englishEl.textContent = card.english;
+            englishEl.style.display = 'none';
+
+            let opts = getRandomOptions(card.english);
+            optionsEl.innerHTML = '';
+            opts.forEach(opt => {
+                let btn = document.createElement('button');
+                btn.className = 'option';
+                btn.textContent = opt;
+                btn.onclick = () => checkAnswer(btn, opt, card.english);
+                optionsEl.appendChild(btn);
+            });
+
+            feedbackEl.textContent = 'Choose the correct English meaning';
+            locked = false;
+            nextBtn.disabled = true;
+            counterEl.textContent = `${currentIndex + 1} / ${cards.length}`;
+            progressEl.style.width = `${((currentIndex + 1) / cards.length) * 100}%`;
+            prevBtn.disabled = currentIndex === 0;
+            nextNavBtn.disabled = currentIndex === cards.length - 1;
+            updateStats();
+        }
+
+        // Check answer
+        function checkAnswer(btn, selected, correct) {
+            if (locked) return;
+
+            if (selected === correct) {
+                btn.classList.add('correct');
+                feedbackEl.innerHTML = '✅ Correct!';
+                if (!cards[currentIndex].known) {
+                    cards[currentIndex].known = true;
+                    known++;
+                }
+                studied++;
+                locked = true;
+                nextBtn.disabled = false;
+
+                document.querySelectorAll('.option').forEach(b => {
+                    b.disabled = true;
+                    if (b.textContent === correct) b.classList.add('correct');
+                });
+            } else {
+                btn.classList.add('wrong');
+                feedbackEl.innerHTML = `❌ Wrong. Answer: "${correct}"`;
+                btn.disabled = true;
+            }
+            updateStats();
+        }
+
+        // Navigation
+        function nextCard() {
+            if (currentIndex < cards.length - 1) {
+                currentIndex++;
+                updateDisplay();
+            }
+        }
+
+        function prevCard() {
+            if (currentIndex > 0) {
+                currentIndex--;
+                updateDisplay();
+            }
+        }
+
+        nextBtn.addEventListener('click', nextCard);
+        prevBtn.addEventListener('click', prevCard);
+        nextNavBtn.addEventListener('click', nextCard);
+
+        // Filter categories
+        document.querySelectorAll('.cat-btn').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                let cat = e.target.dataset.cat;
+
+                if (cat === 'all') {
+                    cards = vocabulary.map(c => ({...c,
+                        known: false
+                    }));
+                } else {
+                    cards = vocabulary.filter(c => c.category === cat).map(c => ({...c,
+                        known: false
+                    }));
+                }
+
+                studied = 0;
+                known = 0;
+                currentIndex = 0;
+
+                document.querySelectorAll('.cat-btn').forEach(b => b.classList.remove('active'));
+                e.target.classList.add('active');
+
+                updateDisplay();
+            });
+        });
+
+        // Update stats
+        function updateStats() {
+            studiedEl.textContent = studied;
+            knownEl.textContent = known;
+            reviewEl.textContent = cards.filter(c => !c.known).length;
+        }
+
+        // Keyboard shortcuts
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'ArrowLeft') prevCard();
+            if (e.key === 'ArrowRight') nextCard();
+            if (e.key === ' ') {
+                e.preventDefault();
+                englishEl.style.display = englishEl.style.display === 'none' ? 'block' : 'none';
+            }
+        });
+
+        // Initialize
+        updateDisplay();
+    </script>
 </body>
 
 </html>
