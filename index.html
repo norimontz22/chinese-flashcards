@@ -4,82 +4,92 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>🇨🇳 Chinese Flash Cards</title>
+    <title>🐼 Chinese Flash Card Game</title>
     <link rel="stylesheet" href="style.css">
 </head>
 
 <body>
-    <div class="container">
+    <div class="game-container">
         <div class="header">
-            <h1>🇨🇳 学中文 <span class="subtitle">Learn Chinese</span></h1>
+            <h1>🇨🇳 猜词挑战 <span class="subtitle">Chinese Flash Cards</span></h1>
         </div>
 
-        <div class="stats">
-            <div class="stat-card">
+        <!-- Stats Bar -->
+        <div class="stats-row">
+            <div class="stat-item">
                 <span class="stat-label">Cards Studied</span>
-                <span id="studied" class="stat-number">0</span>
+                <span id="studied" class="stat-value">0</span>
             </div>
-            <div class="stat-card">
+            <div class="stat-item">
                 <span class="stat-label">Known</span>
-                <span id="known" class="stat-number">0</span>
+                <span id="known" class="stat-value">0</span>
             </div>
-            <div class="stat-card">
+            <div class="stat-item">
                 <span class="stat-label">To Review</span>
-                <span id="remaining" class="stat-number">0</span>
+                <span id="review" class="stat-value">0</span>
             </div>
         </div>
 
-        <!-- Main flashcard area with multiple choice -->
-        <div class="card-stage">
-            <!-- Clickable flashcard (shows Chinese & pinyin) -->
-            <div class="flashcard" id="flashcard">
-                <div class="chinese-big" id="chineseChar">叫</div>
-                <div class="pinyin-badge" id="pinyin">jiào</div>
-                <div class="hint-text">👆 点击卡片看英文</div>
+        <!-- Main Game Area -->
+        <div class="game-area">
+            <!-- Flashcard -->
+            <div class="card-container">
+                <div class="flashcard" id="flashcard">
+                    <div class="card-inner" id="cardInner">
+                        <div class="card-front">
+                            <div class="chinese-char" id="chineseChar">你</div>
+                            <div class="pinyin" id="pinyin">nǐ</div>
+                        </div>
+                        <div class="card-back">
+                            <div class="english-word" id="englishWord">you</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="hint-text">👆 Click card to flip</div>
             </div>
 
-            <!-- Hidden English translation (revealed on click) -->
-            <div class="english-reveal" id="englishReveal">
-                🇬🇧 <span id="englishMeaning">call / to be named</span>
+            <!-- Multiple Choice Options -->
+            <div class="options-area">
+                <div class="options-grid" id="optionsGrid">
+                    <!-- Options will be inserted here by JavaScript -->
+                </div>
             </div>
 
-            <!-- Multiple choice options -->
-            <div class="options-grid" id="optionsContainer"></div>
+            <!-- Feedback Message -->
+            <div class="feedback" id="feedback">
+                🤔 Choose the correct English meaning
+            </div>
 
-            <!-- Feedback message -->
-            <div class="feedback-message" id="feedbackMsg">🤔 Choose the English meaning</div>
-
-            <!-- Next card button (enabled after correct answer) -->
-            <div class="next-area">
-                <button class="next-btn" id="nextCardBtn" disabled>▶ Next Card</button>
+            <!-- Next Button (appears after correct answer) -->
+            <div class="next-button-container">
+                <button class="next-btn" id="nextBtn" disabled>▶ Next Card</button>
             </div>
         </div>
 
-        <!-- Navigation controls -->
-        <div class="controls">
-            <button class="control-btn" id="prevBtn">◀ Previous</button>
-            <button class="control-btn flip-btn" id="flipBtn">🔄 Flip</button>
-            <button class="control-btn" id="nextBtn">Next ▶</button>
+        <!-- Navigation Controls -->
+        <div class="navigation">
+            <button class="nav-btn" id="prevBtn">◀ Previous</button>
+            <span class="card-counter" id="cardCounter">1 / <span id="totalCards">0</span></span>
+            <button class="nav-btn" id="forwardBtn">Next ▶</button>
         </div>
 
-        <!-- Progress bar -->
+        <!-- Progress Bar -->
         <div class="progress-section">
             <div class="progress-bar">
-                <div id="progress" class="progress-fill"></div>
+                <div class="progress-fill" id="progressFill"></div>
             </div>
-            <div class="card-counter" id="cardCounter">Card 1 of <span id="totalCards">0</span></div>
         </div>
 
-        <!-- Category filters -->
-        <div class="category-tabs">
-            <button class="tab active" data-category="all">All</button>
-            <button class="tab" data-category="greetings">Greetings</button>
-            <button class="tab" data-category="basics">Basics</button>
-            <button class="tab" data-category="numbers">Numbers</button>
-            <button class="tab" data-category="food">Food</button>
-            <button class="tab" data-category="people">People</button>
-            <button class="tab" data-category="places">Places</button>
-            <button class="tab" data-category="action">Actions</button>
+        <!-- Category Filters -->
+        <div class="category-filters">
+            <button class="filter-btn active" data-category="all">All</button>
+            <button class="filter-btn" data-category="greetings">Greetings</button>
+            <button class="filter-btn" data-category="basics">Basics</button>
+            <button class="filter-btn" data-category="numbers">Numbers</button>
+            <button class="filter-btn" data-category="food">Food</button>
+            <button class="filter-btn" data-category="people">People</button>
+            <button class="filter-btn" data-category="places">Places</button>
+            <button class="filter-btn" data-category="action">Actions</button>
         </div>
     </div>
 

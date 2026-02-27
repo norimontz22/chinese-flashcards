@@ -1,6 +1,6 @@
 // ==================== VOCABULARY DATA (from screenshots) ====================
-const FULL_CARDS = [
-    // Greetings & basics (200154.png, 200250.png, 200431.png)
+const VOCAB_DATA = [
+    // Greetings & basics
     { chinese: "叫", pinyin: "jiào", english: "call / to be named", category: "basics" },
     { chinese: "名字", pinyin: "míngzi", english: "name", category: "basics" },
     { chinese: "是", pinyin: "shì", english: "to be / yes", category: "basics" },
@@ -32,7 +32,7 @@ const FULL_CARDS = [
     { chinese: "写", pinyin: "xiě", english: "to write", category: "action" },
     { chinese: "字", pinyin: "zì", english: "character", category: "basics" },
     { chinese: "读", pinyin: "dú", english: "to read", category: "action" },
-    // From 200536.png
+    // More vocabulary
     { chinese: "小", pinyin: "xiǎo", english: "small", category: "basics" },
     { chinese: "那儿", pinyin: "nàr", english: "there", category: "places" },
     { chinese: "下面", pinyin: "xiàmiàn", english: "under / below", category: "basics" },
@@ -46,7 +46,7 @@ const FULL_CARDS = [
     { chinese: "椅子", pinyin: "yǐzi", english: "chair", category: "basics" },
     { chinese: "工作", pinyin: "gōngzuò", english: "work / job", category: "action" },
     { chinese: "医生", pinyin: "yīshēng", english: "doctor", category: "people" },
-    // Objects & food from multiple screenshots
+    // Objects & food
     { chinese: "咖啡", pinyin: "kāfēi", english: "coffee", category: "food" },
     { chinese: "公园", pinyin: "gōngyuán", english: "park", category: "places" },
     { chinese: "机场", pinyin: "jīchǎng", english: "airport", category: "places" },
@@ -75,7 +75,7 @@ const FULL_CARDS = [
     { chinese: "语言", pinyin: "yǔyán", english: "language", category: "basics" },
     { chinese: "爷爷", pinyin: "yéye", english: "grandpa", category: "people" },
     { chinese: "我们", pinyin: "wǒmen", english: "we / us", category: "people" },
-    // Numbers (1-5)
+    // Numbers
     { chinese: "一", pinyin: "yī", english: "one", category: "numbers" },
     { chinese: "二", pinyin: "èr", english: "two", category: "numbers" },
     { chinese: "三", pinyin: "sān", english: "three", category: "numbers" },
@@ -83,38 +83,41 @@ const FULL_CARDS = [
     { chinese: "五", pinyin: "wǔ", english: "five", category: "numbers" }
 ];
 
-// Remove duplicates (keep first occurrence)
-const uniqueMap = new Map();
-FULL_CARDS.forEach(card => {
-    if (!uniqueMap.has(card.chinese)) uniqueMap.set(card.chinese, card);
+// Remove duplicates
+const uniqueCards = new Map();
+VOCAB_DATA.forEach(card => {
+    if (!uniqueCards.has(card.chinese)) {
+        uniqueCards.set(card.chinese, card);
+    }
 });
-const MASTER_LIST = Array.from(uniqueMap.values());
+const MASTER_LIST = Array.from(uniqueCards.values());
 
-// ==================== STATE ====================
-let displayedCards = MASTER_LIST.map(c => ({...c, known: false }));
+// ==================== GAME STATE ====================
+let currentCards = MASTER_LIST.map(card => ({...card, known: false }));
 let currentIndex = 0;
 let studied = 0;
-let knownTotal = 0;
-let answerLocked = false; // lock options after correct answer
+let known = 0;
+let answerLocked = false;
+let currentCategory = 'all';
 
-// DOM elements
+// DOM Elements
+const flashcard = document.getElementById('flashcard');
+const cardInner = document.getElementById('cardInner');
 const chineseChar = document.getElementById('chineseChar');
 const pinyin = document.getElementById('pinyin');
-const englishMeaning = document.getElementById('englishMeaning');
-const englishReveal = document.getElementById('englishReveal');
-const flashcard = document.getElementById('flashcard');
-const optionsContainer = document.getElementById('optionsContainer');
-const feedbackMsg = document.getElementById('feedbackMsg');
-const nextCardBtn = document.getElementById('nextCardBtn');
-const prevBtn = document.getElementById('prevBtn');
+const englishWord = document.getElementById('englishWord');
+const optionsGrid = document.getElementById('optionsGrid');
+const feedback = document.getElementById('feedback');
 const nextBtn = document.getElementById('nextBtn');
-const flipBtn = document.getElementById('flipBtn');
-const studiedSpan = document.getElementById('studied');
-const knownSpan = document.getElementById('known');
-const remainingSpan = document.getElementById('remaining');
-const progressFill = document.getElementById('progress');
+const prevBtn = document.getElementById('prevBtn');
+const forwardBtn = document.getElementById('forwardBtn');
 const cardCounter = document.getElementById('cardCounter');
 const totalCardsSpan = document.getElementById('totalCards');
+const progressFill = document.getElementById('progressFill');
+const studiedSpan = document.getElementById('studied');
+const knownSpan = document.getElementById('known');
+const reviewSpan = document.getElementById('review');
+const filterBtns = document.querySelectorAll('.filter-btn');
 
 // ==================== HELPER FUNCTIONS ====================
 function shuffleArray(arr) {
@@ -126,82 +129,98 @@ function shuffleArray(arr) {
 }
 
 function getRandomOptions(correctEnglish, count = 4) {
-    // Get unique English strings from master list
-    const allEnglish = [...new Set(MASTER_LIST.map(c => c.english))].filter(e => e !== correctEnglish);
-    let opts = [correctEnglish];
-    while (opts.length < count && allEnglish.length) {
-        const rand = allEnglish[Math.floor(Math.random() * allEnglish.length)];
-        if (!opts.includes(rand)) {
-            opts.push(rand);
+    // Get unique English meanings from master list
+    const allEnglish = [...new Set(MASTER_LIST.map(c => c.english))];
+    const otherOptions = allEnglish.filter(e => e !== correctEnglish);
+
+    let options = [correctEnglish];
+    while (options.length < count && otherOptions.length > 0) {
+        const randomIndex = Math.floor(Math.random() * otherOptions.length);
+        const randomOption = otherOptions[randomIndex];
+        if (!options.includes(randomOption)) {
+            options.push(randomOption);
         }
     }
-    while (opts.length < count) opts.push("?");
-    return shuffleArray(opts);
+
+    // Fill with placeholders if needed
+    while (options.length < count) {
+        options.push("?");
+    }
+
+    return shuffleArray(options);
 }
 
 function updateDisplay() {
-    const card = displayedCards[currentIndex];
-    chineseChar.textContent = card.chinese;
-    pinyin.textContent = card.pinyin;
-    englishMeaning.textContent = card.english;
-    englishReveal.style.display = 'none';
+    const currentCard = currentCards[currentIndex];
 
-    // Generate options
-    const options = getRandomOptions(card.english, 4);
-    optionsContainer.innerHTML = '';
-    options.forEach(opt => {
-        const btn = document.createElement('button');
-        btn.className = 'option-btn';
-        btn.textContent = opt;
-        btn.addEventListener('click', (e) => handleOptionClick(e.target, opt, card.english));
-        optionsContainer.appendChild(btn);
+    // Update flashcard
+    chineseChar.textContent = currentCard.chinese;
+    pinyin.textContent = currentCard.pinyin;
+    englishWord.textContent = currentCard.english;
+
+    // Reset flip state
+    flashcard.classList.remove('flipped');
+
+    // Generate multiple choice options
+    const options = getRandomOptions(currentCard.english, 4);
+    optionsGrid.innerHTML = '';
+
+    options.forEach(option => {
+        const button = document.createElement('button');
+        button.className = 'option-btn';
+        button.textContent = option;
+        button.addEventListener('click', () => handleOptionClick(button, option, currentCard.english));
+        optionsGrid.appendChild(button);
     });
 
-    feedbackMsg.textContent = '🤔 Choose the English meaning';
+    // Reset feedback and lock
+    feedback.textContent = '🤔 Choose the correct English meaning';
     answerLocked = false;
-    nextCardBtn.disabled = true;
+    nextBtn.disabled = true;
 
     // Update counter
-    cardCounter.textContent = `Card ${currentIndex + 1} of ${displayedCards.length}`;
-    totalCardsSpan.textContent = displayedCards.length;
+    cardCounter.textContent = `${currentIndex + 1} / ${currentCards.length}`;
+    totalCardsSpan.textContent = currentCards.length;
 
     // Update progress bar
-    const progress = ((currentIndex + 1) / displayedCards.length) * 100;
+    const progress = ((currentIndex + 1) / currentCards.length) * 100;
     progressFill.style.width = `${progress}%`;
 
-    // Update nav buttons
+    // Update navigation buttons
     prevBtn.disabled = currentIndex === 0;
-    nextBtn.disabled = currentIndex === displayedCards.length - 1;
+    forwardBtn.disabled = currentIndex === currentCards.length - 1;
 }
 
-function handleOptionClick(btn, selected, correct) {
+function handleOptionClick(button, selected, correct) {
     if (answerLocked) return;
 
     const allOptions = document.querySelectorAll('.option-btn');
 
     if (selected === correct) {
         // Correct answer
-        btn.classList.add('correct-guess');
-        feedbackMsg.innerHTML = '✅ 太棒了！ Correct!';
+        button.classList.add('correct');
+        feedback.textContent = '✅ 太棒了！ Correct!';
 
-        if (!displayedCards[currentIndex].known) {
-            displayedCards[currentIndex].known = true;
-            knownTotal++;
+        if (!currentCards[currentIndex].known) {
+            currentCards[currentIndex].known = true;
+            known++;
         }
         studied++;
-        answerLocked = true;
 
-        // Disable all and highlight correct ones
+        answerLocked = true;
+        nextBtn.disabled = false;
+
+        // Disable all options and highlight correct ones
         allOptions.forEach(opt => {
             opt.disabled = true;
-            if (opt.textContent === correct) opt.classList.add('correct-guess');
+            if (opt.textContent === correct) {
+                opt.classList.add('correct');
+            }
         });
-
-        nextCardBtn.disabled = false;
     } else {
         // Wrong answer
-        btn.classList.add('wrong-guess');
-        feedbackMsg.innerHTML = `❌ Not correct. The answer is "${correct}"`;
+        button.classList.add('wrong');
+        feedback.textContent = `❌ Not correct. The answer is "${correct}"`;
 
         // Highlight the correct option
         allOptions.forEach(opt => {
@@ -210,7 +229,7 @@ function handleOptionClick(btn, selected, correct) {
             }
         });
 
-        btn.disabled = true; // disable only the wrong clicked button
+        button.disabled = true;
     }
 
     updateStats();
@@ -218,13 +237,14 @@ function handleOptionClick(btn, selected, correct) {
 
 function updateStats() {
     studiedSpan.textContent = studied;
-    knownSpan.textContent = knownTotal;
-    const toReview = displayedCards.filter(c => !c.known).length;
-    remainingSpan.textContent = toReview;
+    knownSpan.textContent = known;
+
+    const toReview = currentCards.filter(card => !card.known).length;
+    reviewSpan.textContent = toReview;
 }
 
-function goToNextCard() {
-    if (currentIndex < displayedCards.length - 1) {
+function nextCard() {
+    if (currentIndex < currentCards.length - 1) {
         currentIndex++;
         updateDisplay();
     }
@@ -237,58 +257,64 @@ function previousCard() {
     }
 }
 
-function nextCard() {
-    if (currentIndex < displayedCards.length - 1) {
-        currentIndex++;
-        updateDisplay();
-    }
-}
-
 function flipCard() {
-    if (answerLocked) return;
-    if (englishReveal.style.display === 'none' || !englishReveal.style.display) {
-        englishReveal.style.display = 'block';
-    } else {
-        englishReveal.style.display = 'none';
-    }
+    flashcard.classList.toggle('flipped');
 }
 
-function filterCategory(category, targetTab) {
+function filterCards(category, clickedButton) {
+    currentCategory = category;
+
     if (category === 'all') {
-        displayedCards = MASTER_LIST.map(c => ({...c, known: false }));
+        currentCards = MASTER_LIST.map(card => ({...card, known: false }));
     } else {
-        displayedCards = MASTER_LIST.filter(c => c.category === category).map(c => ({...c, known: false }));
+        currentCards = MASTER_LIST
+            .filter(card => card.category === category)
+            .map(card => ({...card, known: false }));
     }
 
-    // Reset progress
+    // Reset stats
     studied = 0;
-    knownTotal = 0;
+    known = 0;
     currentIndex = 0;
     answerLocked = false;
+
+    // Update active filter button
+    filterBtns.forEach(btn => btn.classList.remove('active'));
+    clickedButton.classList.add('active');
+
+    // Update display
     updateDisplay();
     updateStats();
-    englishReveal.style.display = 'none';
 
-    // Update active tab
-    document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
-    targetTab.classList.add('active');
+    // Reset flip
+    flashcard.classList.remove('flipped');
 }
 
 // ==================== EVENT LISTENERS ====================
 flashcard.addEventListener('click', flipCard);
-flipBtn.addEventListener('click', flipCard);
-nextCardBtn.addEventListener('click', goToNextCard);
-prevBtn.addEventListener('click', previousCard);
 nextBtn.addEventListener('click', nextCard);
+prevBtn.addEventListener('click', previousCard);
+forwardBtn.addEventListener('click', nextCard);
 
-// Category tabs
-document.querySelectorAll('.tab').forEach(tab => {
-    tab.addEventListener('click', (e) => {
+filterBtns.forEach(btn => {
+    btn.addEventListener('click', (e) => {
         const category = e.target.dataset.category;
-        filterCategory(category, e.target);
+        filterCards(category, e.target);
     });
 });
 
-// Initialize
+// Keyboard shortcuts
+document.addEventListener('keydown', (e) => {
+    if (e.key === 'ArrowLeft') {
+        previousCard();
+    } else if (e.key === 'ArrowRight') {
+        nextCard();
+    } else if (e.key === ' ' || e.key === 'Space') {
+        e.preventDefault();
+        flipCard();
+    }
+});
+
+// ==================== INITIALIZE ====================
 updateDisplay();
 updateStats();
